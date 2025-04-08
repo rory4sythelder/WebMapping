@@ -2,19 +2,22 @@
 <html>
 
   <head>
+   
+   
     <meta charset='utf-8' />
     <title>University of Oregon Mapping</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <!--    Include the reference to the Mapbox JavaScript here in the <head> of the page  (Part I.1)  -->
+   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
     
 
 
           
-    <!--    Include the reference to the Mapbox CSS here in between <head> tags    (Part I.2) -->
+   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
     
 
     <style>
-        /* Insert the additional CSS code here between the <style> tags  (Part I.4)   */
+       body { margin:0; padding:0; }
+     #map { position:absolute; top:0; bottom:0; width:100%; }
         
 
 
@@ -22,16 +25,21 @@
   </head>
 
   <body>
-    <!--  Insert the map div here in the <body> of the page  (Part I)  -->
+    <div id='map'></div>
    
     <!--  Insert the title div here (part V) -->
 
     <script>
         // Insert the JavaScript within the <script> tags, within the body   
-        // Start with the Mapbox access token here (Part 2.1)
+         mapboxgl.accessToken = 'pk.eyJ1Ijoicm9yeTRzeXRoZWxkZXIiLCJhIjoiY205MXV2eXh1MDUxejJqb2VyOXlqcHduMSJ9.jayP103_JPGAKudstFC6Zw'; // (Part 2.1)
  
    
-        // Then initialize the map here (Part 2.2)
+        //  var map = new mapboxgl.Map({
+     container: 'map', // id of a div on your page, where the map will be inserted
+     style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+     center: [122.6784, 45.5152], // starting position [122.6784, 45.5152] eg. [-122.6788, 45.5212]
+     zoom: 11 // starting zoom 
+ });
    
         // Add popups for markers here. Yes, before the markers!  (part IV)
         

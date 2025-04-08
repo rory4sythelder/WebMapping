@@ -40,7 +40,7 @@
       var map = new mapboxgl.Map({
           container: 'map', // id of a div on your page, where the map will be inserted
           style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
-          center: [122.6784, 45.5152], // starting position [122.6784, 45.5152] eg. [-122.6788, 45.5212]
+          center: [45.5152, 122.6784], // starting position [122.6784, 45.5152] eg. [-122.6788, 45.5212]
           zoom: 11 // starting zoom 
       });
    
@@ -48,20 +48,20 @@
         .setHTML('Hello World. Welcome to Portland!');
 
         var marker = new mapboxgl.Marker()
-          .setLngLat([-122.6788, 45.5212])
+          .setLngLat([45.5152, 122.6784])
           .setPopup(popup) //add the popup with the variable name 'popup' to the marker 
           .addTo(map); // add the open marker to the map
         
         var marker = new mapboxgl.Marker()
-   .setLngLat([122.6784, 45.5152]) // starting position [lng, lat] 
+   .setLngLat([45.5152, 122.6784]) // starting position [lng, lat] 
    .addTo(map);
 
          var marker = new mapboxgl.Marker({color:'red'})
-   .setLngLat([-122.6788, 45.5212]) // starting position [lng, lat] 
+   .setLngLat([45.5152, 122.6784]) // starting position [lng, lat] 
    .addTo(map);
 
    var popup_layer = new mapboxgl.Popup({closeOnClick: false}) 
-     .setLngLat([-122.64, 45.5]) //popup coordinates
+     .setLngLat([45.5152, 122.6784]) //popup coordinates
      .setHTML('<h1>Hi Portland!</h1>') //popup text
      .addTo(map); //add this popup to the map!
 
@@ -70,7 +70,7 @@
      var popup_layer = new mapboxgl.Popup({
        closeOnClick: true, anchor: 'top-right'
      })
-     .setLngLat([-122.64, 45.5])
+     .setLngLat([45.5152, 122.6784])
      .setHTML('<h1>Hi Portland!</h1>')
      .addTo(map);
 

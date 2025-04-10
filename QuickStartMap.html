@@ -18,6 +18,14 @@
     <style>
        body { margin:0; padding:0; }
      #map { position:absolute; top:0; bottom:0; width:100%; }
+     #title {
+      position: absolute;
+      z-index: 9999;
+      background-color: white;
+      opacity: 0.8;
+      text-align: center;
+      width: 100%; /* optional, depending on layout */
+    }
         
 
 
@@ -30,6 +38,11 @@
     <div id='title'>
       <h1>My Map of PDX</h1>
       <h2>By: Rory Forsythe-Elder</h2>
+
+      #title { z-index: 9999; 
+        background-color:white; 
+        opacity: 80%; 
+        text-align: center }
 </div>
 
     <script>
@@ -45,7 +58,7 @@
       });
    
         var popup = new mapboxgl.Popup({ offset: 25 })
-        .setHTML('Hello World. Welcome to Portland!');
+        .setHTML('This. Is. Portland.');
 
         var marker = new mapboxgl.Marker()
         .setLngLat([-122.6788, 45.5212])
@@ -57,7 +70,7 @@
    .addTo(map);
 
          var marker = new mapboxgl.Marker({color:'yellow'})
-   .setLngLat([-122.6788, 45.5212]) // starting position [lng, lat] 
+   .setLngLat([-122.7143, 45.5094]) // starting position [lng, lat] 
    .addTo(map);
 
   

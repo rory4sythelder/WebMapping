@@ -61,13 +61,11 @@
         .setHTML('This. Is. Portland.');
 
         var marker = new mapboxgl.Marker()
-        .setLngLat([-122.6788, 45.5212])
+        .setLngLat([-122.6773, 45.5184])
         .setPopup(popup) //add the popup with the variable name 'popup' to the marker 
         .addTo(map); // add the open marker to the map
         
-        var marker = new mapboxgl.Marker()
-   .setLngLat([-122.6784, 45.5152]) // starting position [lng, lat] 
-   .addTo(map);
+        
 
          var marker = new mapboxgl.Marker({color:'yellow'})
    .setLngLat([-122.7143, 45.5094]) // starting position [lng, lat] 
@@ -89,6 +87,13 @@
      })
      .setLngLat([-122.7143, 45.5094])
      .setHTML('<a href="https://www.oregonzoo.org/">Oregon Zoo</a>')
+     .addTo(map);
+
+     var popup_layer_voodoo = new mapboxgl.Popup({
+       closeOnClick: true, anchor: 'top-left'
+     })
+     .setLngLat([-122.6773, 45.5184])
+     .setHTML('<a href="https://www.pioneerplace.com/en/">Pioneer Place</a>')
      .addTo(map);
     </script>
 

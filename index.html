@@ -112,9 +112,13 @@
   <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoicm9yeTRzeXRoZWxkZXIiLCJhIjoiY205MXV2eXh1MDUxejJqb2VyOXlqcHduMSJ9.jayP103_JPGAKudstFC6Zw'; 
     var map = new mapboxgl.Map({
-        container: 'map', // container id
-        style: 'mapbox://styles/rory4sythelder/cm9syx4i800d901spg6kg9by7' // stylesheet location
-    });
+    container: 'map', // container id
+    style: 'mapbox://styles/rory4sythelder/cm9syx4i800d901spg6kg9by7', // stylesheet location
+    center: [-122.6765, 45.5231], // longitude, latitude for Portland, OR
+    zoom: 11 // adjust as needed
+});
+
+    
     map.addControl(new mapboxgl.NavigationControl());
     var state = { panelOpen: true };
 

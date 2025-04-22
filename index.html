@@ -87,19 +87,19 @@
     </style>
 </head>
 <body>
-
-  <div id='map'></div>
+<!-- map description panel -->
+  <div id='map'></div> 
   <div class="descriptionPanel" id="descriptionPanel" style="height: 250px;">
-    <span onClick=panelSelect() id="glyph" class="chevron glyphicon glyphicon-chevron-down"></span>
+    <span onClick=panelSelect() id="glyph" class="chevron glyphicon glyphicon-chevron-down"></span> 
     <hr/>
-    <h4>WHAT AM I LOOKING AT?</h4>
+    <h4>WHAT AM I LOOKING AT?</h4> 
     <p style="margin-left: 10px; margin-right: 10px;">
       This is a map showing every single person in the Portland Area as a dot. Data is taken from the 2017 US Census, and is accurate at the level of a block; however, within each block location is randomized. Points are colored based on the number of home owners versus renters on a block.
     </p>
   </div>
 
-  <div class="LegendContainer">
-    <div class="legendItem">
+  <div class="LegendContainer"> 
+    <div class="legendItem"> 
         <span class="owner">&#11044;</span>
         <span class="layerDescription">Owners</span>
     </div>
@@ -108,9 +108,9 @@
         <span class="layerDescription">Renters</span>
     </div>
   </div>
-
+ 
   <script>
-    mapboxgl.accessToken = 'pk.eyJ1Ijoicm9yeTRzeXRoZWxkZXIiLCJhIjoiY205MXV2eXh1MDUxejJqb2VyOXlqcHduMSJ9.jayP103_JPGAKudstFC6Zw'; 
+    mapboxgl.accessToken = 'pk.eyJ1Ijoicm9yeTRzeXRoZWxkZXIiLCJhIjoiY205MXV2eXh1MDUxejJqb2VyOXlqcHduMSJ9.jayP103_JPGAKudstFC6Zw'; // token  to mapbox style
     var map = new mapboxgl.Map({
     container: 'map', // container id
     style: 'mapbox://styles/rory4sythelder/cm9syx4i800d901spg6kg9by7', // stylesheet location

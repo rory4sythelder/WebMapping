@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Swipe between maps</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.css' rel='stylesheet' />
+    <!-- Swipe plugin -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css' type='text/css' />
+    
+    <style>
+        body { margin:0; padding:0; overflow: hidden; }
+        body * {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="comparison-container">
+        <div id='owners' class='map'></div>  <!-- div for owners map -->
+        <div id='renters' class='map'></div> <!-- div for renters map -->
+    </div>
+
+    <script>
+        // Access token
+        mapboxgl.accessToken = 'pk.eyJ1Ijoicm9yeTRzeXRoZWxkZXIiLCJhIjoiY205MXV2eXh1MDUxejJqb2VyOXlqcHduMSJ9.jayP103_JPGAKudstFC6Zw';
+        
+        // Owner and renter map declarations
+        var ownerMap = new mapboxgl.Map({
+            container: 'owners',
+            style: 'mapbox://styles/mapbox/dark-v10',
+            center: [-122.6784, 45.5152],
+            zoom: 10
+        });
+
+        var renterMap = new mapboxgl.Map({
+            container: 'renters',
+            style: 'mapbox://styles/mapbox/dark-v10',
+            center: [-122.6784, 45.5152],
+            zoom: 10
+        });
+
+        // Swipe container
+        var container = '#comparison-container';
+        var map = new mapboxgl.Compare(ownerMap, renterMap, container, {});
+
+        // Create popup (shared by both maps)
+        var popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+
+        // OWNER MAP LOAD
+        ownerMap.on('load', function() {
+            ownerMap.addLayer({
+                id: 'Owner Data',
+                type: "fill",
+                source: {
+                    type: 'vector',
+                    url: 'mapbox://rory4sythelder.4uqvtjex'
+                },
+                'source-layer': 'Owner-Renter-Pop-cvgf6i', // 
+                paint: {
+                    'fill-color': [
+                        "step",
+                        ["get", "Own"],
+                        "hsl(225, 100%, 97%)",
+                        17.0, "hsl(203, 47%, 82%)",
+                        22.0, "hsl(202, 57%, 63%)",
+                        27.0, "#3182bd",
+                        32.0, "hsl(210, 90%, 32%)"
+                    ],
+                    'fill-opacity': 0.7
+                }
+            });
+
+            // Owner Map Popup
+            ownerMap.on('mousemove', 'Owner Data', function(e) {
+                ownerMap.getCanvas().style.cursor = 'pointer';
+                var coordinates = e.lngLat;
+                var description = e.features[0].properties.Own;
+                popup.setLngLat(coordinates)
+                    .setHTML("Homeowners: " + description + "%")
+                    .addTo(ownerMap);
+            });
+
+            ownerMap.on('mouseleave', 'Owner Data', function() {
+                ownerMap.getCanvas().style.cursor = '';
+                popup.remove();
+            });
+        });
+
+        // RENTER MAP LOAD
+        renterMap.on('load', function() {
+            renterMap.addLayer({
+                id: 'Renter Data',
+                type: "fill",
+                source: {
+                    type: 'vector',
+                    url: 'mapbox://rory4sythelder.4uqvtjex'
+                },
+                'source-layer': 'YOUR_SOURCE_LAYER_NAME', // <-- update this!
+                paint: {
+                    'fill-color': [
+                        "step",
+                        ["get", "Rent"],
+                        "hsl(225, 100%, 97%)",
+                        17.0, "hsl(203, 47%, 82%)",
+                        22.0, "hsl(202, 57%, 63%)",
+                        27.0, "#3182bd",
+                        32.0, "hsl(210, 90%, 32%)"
+                    ],
+                    'fill-opacity': 0.7
+                }
+            });
+
+            // Renter Map Popup
+            renterMap.on('mousemove', 'Renter Data', function(e) {
+                renterMap.getCanvas().style.cursor = 'pointer';
+                var coordinates = e.lngLat;
+                var description = e.features[0].properties.Rent;
+                popup.setLngLat(coordinates)
+                    .setHTML("Renters: " + description + "%")
+                    .addTo(renterMap);
+            });
+
+            renterMap.on('mouseleave', 'Renter Data', function() {
+                renterMap.getCanvas().style.cursor = '';
+                popup.remove();
+            });
+        });
+    </script>
+</body>
+</html>

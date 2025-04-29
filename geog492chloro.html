@@ -2,16 +2,16 @@
 <html>
 <head>
     <meta charset='utf-8' />
-    <title>Swipe between maps</title>
+    <title>Homeowners vs. Renters in Portland</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.css' rel='stylesheet' />
+    <link href='https://api.tiles.mapbox-gl-js/v3.11.0/mapbox-gl.css' rel='stylesheet' />
     <!-- Swipe plugin -->
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.js'></script>
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css' type='text/css' />
     
     <style>
-        body { margin:0; padding:0; overflow: hidden; }
+        body { margin:0; padding:0; overflow: hidden; font-family: sans-serif;}
         body * {
             -webkit-touch-callout: none;
             -webkit-user-select: none;
@@ -25,12 +25,49 @@
             bottom: 0;
             width: 100%;
         }
+        #title {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 1;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        #legend {
+            position: absolute;
+            bottom: 30px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            font-size: 12px;
+            line-height: 18px;
+            color: #000;
+            z-index: 1;
+            border-radius: 5px;
+        }
+        .legend-key {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
+    <div id="title">Homeowners vs. Renters in Portland</div>
     <div id="comparison-container">
-        <div id='owners' class='map'></div>  <!-- div for owners map -->
-        <div id='renters' class='map'></div> <!-- div for renters map -->
+        <div id='owners' class='map'></div>
+        <div id='renters' class='map'></div>
+    </div>
+    <div id="legend">
+        <div><span class="legend-key" style="background-color: hsl(225, 100%, 97%)"></span>0-17%</div>
+        <div><span class="legend-key" style="background-color: hsl(203, 47%, 82%)"></span>17-22%</div>
+        <div><span class="legend-key" style="background-color: hsl(202, 57%, 63%)"></span>22-27%</div>
+        <div><span class="legend-key" style="background-color: #3182bd"></span>27-32%</div>
+        <div><span class="legend-key" style="background-color: hsl(210, 90%, 32%)"></span>32%+</div>
     </div>
 
     <script>
@@ -54,7 +91,11 @@
 
         // Swipe container
         var container = '#comparison-container';
-        var map = new mapboxgl.Compare(ownerMap, renterMap, container, {});
+        var map = new mapboxgl.Compare(ownerMap, renterMap, container, {
+            // Customization: Set swipe starting position at 50% instead of 0%
+            mousemove: true
+        });
+        document.querySelector('.compare').style.left = '50%';
 
         // Create popup (shared by both maps)
         var popup = new mapboxgl.Popup({
@@ -71,7 +112,7 @@
                     type: 'vector',
                     url: 'mapbox://rory4sythelder.4uqvtjex'
                 },
-                'source-layer': 'Owner-Renter-Pop-cvgf6i', // 
+                'source-layer': 'Owner-Renter-Pop-cvgf6i',
                 paint: {
                     'fill-color': [
                         "step",
@@ -111,7 +152,7 @@
                     type: 'vector',
                     url: 'mapbox://rory4sythelder.4uqvtjex'
                 },
-                'source-layer': 'Owner-Renter-Pop-cvgf6i', // <-- renters
+                'source-layer': 'Owner-Renter-Pop-cvgf6i',
                 paint: {
                     'fill-color': [
                         "step",

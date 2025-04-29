@@ -5,13 +5,13 @@
     <title>Homeowners vs. Renters in Portland</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox-gl-js/v3.11.0/mapbox-gl.css' rel='stylesheet' />
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.css' rel='stylesheet' />
     <!-- Swipe plugin -->
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.js'></script>
-    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css' type='text/css' />
-    
+    <link rel='stylesheet' href='https://api.mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css' type='text/css' />
+
     <style>
-        body { margin:0; padding:0; overflow: hidden; font-family: sans-serif;}
+        body { margin:0; padding:0; overflow: hidden; font-family: sans-serif; }
         body * {
             -webkit-touch-callout: none;
             -webkit-user-select: none;
@@ -63,10 +63,10 @@
         <div id='renters' class='map'></div>
     </div>
     <div id="legend">
-        <div><span class="legend-key" style="background-color: hsl(225, 100%, 97%)"></span>0-17%</div>
-        <div><span class="legend-key" style="background-color: hsl(203, 47%, 82%)"></span>17-22%</div>
-        <div><span class="legend-key" style="background-color: hsl(202, 57%, 63%)"></span>22-27%</div>
-        <div><span class="legend-key" style="background-color: #3182bd"></span>27-32%</div>
+        <div><span class="legend-key" style="background-color: hsl(225, 100%, 97%)"></span>0–17%</div>
+        <div><span class="legend-key" style="background-color: hsl(203, 47%, 82%)"></span>17–22%</div>
+        <div><span class="legend-key" style="background-color: hsl(202, 57%, 63%)"></span>22–27%</div>
+        <div><span class="legend-key" style="background-color: #3182bd"></span>27–32%</div>
         <div><span class="legend-key" style="background-color: hsl(210, 90%, 32%)"></span>32%+</div>
     </div>
 
@@ -74,7 +74,7 @@
         // Access token
         mapboxgl.accessToken = 'pk.eyJ1Ijoicm9yeTRzeXRoZWxkZXIiLCJhIjoiY205MXV2eXh1MDUxejJqb2VyOXlqcHduMSJ9.jayP103_JPGAKudstFC6Zw';
         
-        // Owner and renter map declarations
+        // Owner and renter maps
         var ownerMap = new mapboxgl.Map({
             container: 'owners',
             style: 'mapbox://styles/mapbox/dark-v10',
@@ -89,21 +89,17 @@
             zoom: 10
         });
 
-        // Swipe container
+        // Set up swipe comparison (no broken line now)
         var container = '#comparison-container';
-        var map = new mapboxgl.Compare(ownerMap, renterMap, container, {
-            // Customization: Set swipe starting position at 50% instead of 0%
-            mousemove: true
-        });
-        document.querySelector('.compare').style.left = '50%';
+        var map = new mapboxgl.Compare(ownerMap, renterMap, container, {});
 
-        // Create popup (shared by both maps)
+        // Shared popup
         var popup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false
         });
 
-        // OWNER MAP LOAD
+        // Owner Map Load
         ownerMap.on('load', function() {
             ownerMap.addLayer({
                 id: 'Owner Data',
@@ -127,7 +123,6 @@
                 }
             });
 
-            // Owner Map Popup
             ownerMap.on('mousemove', 'Owner Data', function(e) {
                 ownerMap.getCanvas().style.cursor = 'pointer';
                 var coordinates = e.lngLat;
@@ -143,7 +138,7 @@
             });
         });
 
-        // RENTER MAP LOAD
+        // Renter Map Load
         renterMap.on('load', function() {
             renterMap.addLayer({
                 id: 'Renter Data',
@@ -167,7 +162,6 @@
                 }
             });
 
-            // Renter Map Popup
             renterMap.on('mousemove', 'Renter Data', function(e) {
                 renterMap.getCanvas().style.cursor = 'pointer';
                 var coordinates = e.lngLat;

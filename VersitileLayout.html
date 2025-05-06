@@ -1,0 +1,103 @@
+<!-- A Versatile Layout for Full-screen Maps by Andy Cochran
+Andy Cochran 
+From https://medium.com/nyc-planning-digital/a-versatile-layout-for-full-screen-maps-229cec508b22 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Hello World</title>
+
+    
+    <!-- JavaScript Libraries-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/js/foundation.js"></script>
+
+  
+    <!-- CSS Links -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css" rel="stylesheet" />
+    <link href="VersitileLayout.css" rel="stylesheet" />
+    
+
+    
+</head>
+
+<body>
+
+    <div class="site-header">
+        <strong class="site-title">My Mapping Application</strong>
+    </div>
+
+    <div class="site-main grid-x has-content-open">
+
+        <div class="search-container cell medium-3 large-2">
+            <input type="text" placeholder="Search..." class="search" />
+            <ul class="search-results no-bullet">
+                <li>Search Result 1</li>
+                <li>Search Result 2</li>
+                <li>Search Result 3</li>
+            </ul>
+        </div>
+        
+        <div class="map-container cell medium-auto large-order-2">
+            <iframe src="filter-markers.html" title="Map"></iframe> 
+
+        </div>
+
+        <!--  Sidebar panel  -->
+        <div class="sidebar cell medium-3 large-2 large-order-1 show-for-medium">
+            <h5>Upcoming Events</h5>
+            <ul>
+                <li><a class="content-link" href="https://m3rockfest.com/">May 2-4: M3 Rock Fest</a></li>    
+                <li><a class="content-link" href="https://www.nhl.com/capitals/">May 6: Washington Capitals Game 1 vs Carolina Hurricanes</a></li>                
+                <li><a class="content-link" href="https://www.commanders.com/stadium/2025/kendrick/">June 18: Kendrick Lamar Grand National Tour</a></li>                
+                            
+        
+            </ul>
+
+            <hr />
+
+        </div>
+
+        <div class="content-close-button-container">
+            <a href="#" class="content-close-button">×</a>
+        </div>
+        
+        <!--  Content panel  -->
+        <div class="content cell large-5 large-order-3">
+            <h2>Washington, DC Activities</h2>
+            <p>Washington in the District of Columbia is a vibrant city with so much to offer.</p>
+            <p>As our national capital, history buffs will of course enjoy visiting the White House, Capitol building, and the National Mall. </p>
+            <p>However, Washington has fun for everyone! Here, you can take a bike ride along the Potomac, listen to a Lil Wayne concert, and see a Broadway show! (you don't have to be in New York!)</p>
+            <p>Here is a map showcasing a few sites in the Capitol City where you can have an adventure! </p>
+        </div>
+
+    </div>
+
+    <script>
+       
+        $(document).ready(function() {
+
+            $('.content-close-button').click(function() {
+                $('.content-close-button').hide();
+                $('.content').hide();
+                $('.site-main').removeClass('has-content-open')
+
+                // When the map is resized programmatically, window resize must be triggered so that the map renders in the newly allotted space.
+                window.dispatchEvent(new Event('resize'));
+
+            });
+
+            $('.content-link').click(function() {
+                $('.content-close-button').show();
+                $('.content').show();
+                $('.site-main').addClass('has-content-open')
+                window.dispatchEvent(new Event('resize'));
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>

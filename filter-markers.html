@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Filter symbols by toggling a list</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        .filter-group {
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            font-weight: 600;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+            border-radius: 3px;
+            width: 120px;
+            color: #fff;
+        }
+        .filter-group input[type='checkbox']:first-child + label {
+            border-radius: 3px 3px 0 0;
+        }
+        .filter-group label:last-child {
+            border-radius: 0 0 3px 3px;
+            border: none;
+        }
+        .filter-group input[type='checkbox'] {
+            display: none;
+        }
+        .filter-group input[type='checkbox'] + label {
+            background-color: #3386c0;
+            display: block;
+            cursor: pointer;
+            padding: 10px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+            text-transform: capitalize;
+        }
+        .filter-group input[type='checkbox'] + label:hover,
+        .filter-group input[type='checkbox']:checked + label {
+            background-color: #4ea0da;
+        }
+        .filter-group input[type='checkbox']:checked + label:before {
+            content: '✔';
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<nav id="filter-group" class="filter-group"></nav>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoiam9tZXJzb24iLCJhIjoiY2o1bXE2bHlyMnJhZDMzbnpyMnhlODdpcSJ9.QJMJ_cTFCY050aZfSn1umQ';
+
+var places = {
+    "type": "FeatureCollection",
+    "features": [
+        { "type": "Feature", "properties": { "icon": "theatre" }, "geometry": { "type": "Point", "coordinates": [-77.038659, 38.931567] } },
+        { "type": "Feature", "properties": { "icon": "theatre" }, "geometry": { "type": "Point", "coordinates": [-77.003168, 38.894651] } },
+        { "type": "Feature", "properties": { "icon": "bar" }, "geometry": { "type": "Point", "coordinates": [-77.090372, 38.881189] } },
+        { "type": "Feature", "properties": { "icon": "bicycle" }, "geometry": { "type": "Point", "coordinates": [-77.052477, 38.943951] } },
+        { "type": "Feature", "properties": { "icon": "music" }, "geometry": { "type": "Point", "coordinates": [-77.031706, 38.914581] } },
+        { "type": "Feature", "properties": { "icon": "music" }, "geometry": { "type": "Point", "coordinates": [-77.020945, 38.878241] } },
+        { "type": "Feature", "properties": { "icon": "music" }, "geometry": { "type": "Point", "coordinates": [-77.007481, 38.876516] } }
+    ]
+};
+
+var bounds = [[-77.26383, 38.73854], [-76.83569, 39.00114]];
+
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/light-v10',
+    center: [-77.04, 38.907],
+    zoom: 11.15,
+    minZoom: 12,
+    maxBounds: bounds
+});
+
+var filterGroup = document.getElementById('filter-group');
+
+map.on('load', function () {
+    map.addSource('places', {
+        'type': 'geojson',
+        'data': places
+    });
+
+    const addedLayers = new Set();
+
+    places.features.forEach(function (feature) {
+        var symbol = feature.properties['icon'];
+        var layerID = 'poi-' + symbol;
+
+        if (!addedLayers.has(layerID)) {
+            map.addLayer({
+                'id': layerID,
+                'type': 'symbol',
+                'source': 'places',
+                'layout': {
+                    'icon-image': symbol + '-15',
+                    'icon-allow-overlap': true
+                },
+                'filter': ['==', 'icon', symbol]
+            });
+
+            var input = document.createElement('input');
+            input.type = 'checkbox';
+            input.id = layerID;
+            input.checked = true;
+            filterGroup.appendChild(input);
+
+            var label = document.createElement('label');
+            label.setAttribute('for', layerID);
+            label.textContent = symbol;
+            filterGroup.appendChild(label);
+
+            input.addEventListener('change', function (e) {
+                map.setLayoutProperty(
+                    layerID,
+                    'visibility',
+                    e.target.checked ? 'visible' : 'none'
+                );
+            });
+
+            map.on('click', layerID, function (e) {
+                var coordinates = e.features[0].geometry.coordinates.slice();
+                var iconType = e.features[0].properties.icon;
+                var description = '';
+                if (iconType === 'bar') {
+                    description = "A place to enjoy drinks with friends or strangers!<br>Type: bar";
+                } else if (iconType === 'bicycle') {
+                    description = "Get in an aerobic workout!<br>Type: bicycle";
+                } else if (iconType === 'music') {
+                    description = "Listen to your favorite artists here!<br>Type: music";
+                } else if (iconType === 'theatre') {
+                    description = "It's better than the movies! If you stand for nothing, Burr, what will you fall for?<br>Type: theatre";
+                } else {
+                    description = "This is a map point <br>Type: " + iconType;
+                }
+
+                new mapboxgl.Popup()
+                    .setLngLat(coordinates)
+                    .setHTML(description)
+                    .addTo(map);
+            });
+
+            map.on('mouseenter', layerID, function () {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+
+            map.on('mouseleave', layerID, function () {
+                map.getCanvas().style.cursor = '';
+            });
+
+            addedLayers.add(layerID);
+        }
+    });
+});
+</script>
+</body>
+</html>

@@ -11,7 +11,7 @@
     <!-- Mapbox CSS -->
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0/mapbox-gl.css' rel='stylesheet' />
 
-    <!-- Link to Google Font -->
+    <!-- Link to google gont -->
     <link rel='preconnect' href='https://fonts.gstatic.com'>
     <link href='https://fonts.googleapis.com/css2?family=Pacifico&display=swap' rel='stylesheet'>
 
@@ -73,7 +73,7 @@
       var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/outdoors-v11',
-        center: [-122.6788, 45.5212],  // Portland
+        center: [-110.74524187568, 44.706216445069],  // Portland
         zoom: 13
       });
 
@@ -94,7 +94,7 @@
 
       // Popup for marker 3
       var popup3_content = '<h2>Press play to listen to a bison eating</h2><br>';
-      popup3_content += '<audio controls><source src="sounds/yell-YELLBisonEating150313.mp3" type="audio/mpeg">Your browser does not support the audio element.</audio><br>';
+      popup3_content += '<audio controls><source src="yell-YELLBisonEating150313.mp3" type="audio/mpeg">Your browser does not support the audio element.</audio><br>';
       popup3_content += 'Source: NPS/Jennifer Jerret, <a href="https://www.nps.gov/yell/learn/photosmultimedia/sounds-bisoneating.htm">NPS</a><br>';
       popup3_content += '<img class="popupImage" src="https://www.nps.gov/yell/learn/photosmultimedia/images/ndh-yell-bison-gibbon_2.jpg?maxwidth=1200&maxheight=1200&autorotate=false" alt="A bison eating grass in Yellowstone National Park"><br>';
       popup3_content += 'Source: NPS/Neal Herbert, <a href="https://www.nps.gov/yell/learn/photosmultimedia/sounds-bisoneating.htm">NPS</a>';

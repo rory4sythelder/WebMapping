@@ -3,7 +3,7 @@
 
   <head>
     <meta charset='utf-8' />
-    <title>University of Oregon Mapping</title>
+    <title>Sounds around the World</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
     <!-- Mapbox JavaScript -->
@@ -11,7 +11,7 @@
     <!-- Mapbox CSS -->
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0/mapbox-gl.css' rel='stylesheet' />
 
-    <!-- Link to google gont -->
+    <!-- Link to google font -->
     <link rel='preconnect' href='https://fonts.gstatic.com'>
     <link href='https://fonts.googleapis.com/css2?family=Pacifico&display=swap' rel='stylesheet'>
 
@@ -38,8 +38,8 @@
         border-radius: 3px;
         font-size: 1em;
         font-weight: bold;
-        color: oldlace;
-        background: DarkRed;
+        color: black;
+        background: yellow;
         cursor: pointer;
       }
 
@@ -53,6 +53,28 @@
       .popupImage {
         width: 100%;
       }
+
+      /* Legend styling */
+      #legend {
+        position: absolute;
+        bottom: 30px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.85);
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-family: 'Pacifico', cursive;
+        font-size: 14px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+      }
+      .legend-item svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 6px;
+      }
     </style>
   </head>
 
@@ -60,10 +82,24 @@
     <!-- Map container -->
     <div id='map'></div>
 
+    <!-- Legend -->
+    <div id="legend">
+      <div class="legend-item">
+        <!-- inline SVG pin, filled yellow with black outline -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path fill="yellow" stroke="black" stroke-width="1"
+            d="M12 2C8.1 2 5 5.1 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-3.9-3.1-7-7-7zm0 9.5
+               c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z"/>
+        </svg>
+        <span>Sound of the world</span>
+      </div>
+    </div>
+
     <!-- Fly-to buttons -->
     <button class='fly' id='PortlandButton'>Jump to Portland</button>
     <button class='fly' id='LondonButton'>Jump to London</button>
     <button class='fly' id='YellowstoneButton'>Jump to Yellowstone</button>
+    <button class='fly' id='HadithaButton'>Jump to Haditha Desert</button>
 
     <script>
       // Mapbox access token
@@ -73,72 +109,89 @@
       var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/outdoors-v11',
-        center: [-110.74524187568, 44.706216445069],  // Portland
-        zoom: 13
+        center: [-110.74524187568, 44.706216445069],  // changed to yellowstone
+        zoom: 9
       });
 
       /***  POPUPS  ***/
       // Popup for marker 1
       var popup1_content = '<h2>Play the video to listen to Portland</h2><br>';
-      popup1_content += '<iframe width="300px" src="https://www.youtube.com/embed/z1AdmS-LqyA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>';
+      popup1_content += '<iframe width="300px" src="https://www.youtube.com/embed/z1AdmS-LqyA" ' +
+                        'frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" ' +
+                        'allowfullscreen></iframe><br>';
       popup1_content += 'Source: Ian Lind, <a href="https://www.youtube.com/embed/z1AdmS-LqyA">YouTube</a>';
       var popup1 = new mapboxgl.Popup({ minWidth: '300px' })
         .setHTML(popup1_content);
 
       // Popup for marker 2
       var popup2_content = '<h2>Press play to listen to London in 1928</h2><br>';
-      popup2_content += '<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/londonstreetnoises/cromwell-1928&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false"></iframe><br>';
+      popup2_content += '<iframe width="100%" height="166" scrolling="no" frameborder="no" ' +
+                        'allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/' +
+                        'londonstreetnoises/cromwell-1928&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false">' +
+                        '</iframe><br>';
       popup2_content += 'Source: LondonStreetNoises.co.uk, <a href="https://soundcloud.com/londonstreetnoises">SoundCloud</a>';
       var popup2 = new mapboxgl.Popup({ minWidth: '300px' })
         .setHTML(popup2_content);
 
       // Popup for marker 3
-      var popup3_content = '<h2>Press play to listen to a bison eating</h2><br>';
-      popup3_content += '<audio controls><source src="yell-YELLBisonEating150313.mp3" type="audio/mpeg">Your browser does not support the audio element.</audio><br>';
+      var popup3_content = '<h2>Press play to listen to bison eating</h2><br>';
+      popup3_content += '<audio controls><source src="yell-YELLBisonEating150313.mp3" type="audio/mpeg">' +
+                        'Your browser does not support the audio element.</audio><br>';
       popup3_content += 'Source: NPS/Jennifer Jerret, <a href="https://www.nps.gov/yell/learn/photosmultimedia/sounds-bisoneating.htm">NPS</a><br>';
-      popup3_content += '<img class="popupImage" src="https://www.nps.gov/yell/learn/photosmultimedia/images/ndh-yell-bison-gibbon_2.jpg?maxwidth=1200&maxheight=1200&autorotate=false" alt="A bison eating grass in Yellowstone National Park"><br>';
+      popup3_content += '<img class="popupImage" ' +
+                        'src="https://www.nps.gov/yell/learn/photosmultimedia/images/ndh-yell-bison-gibbon_2.jpg?maxwidth=1200&maxheight=1200&autorotate=false" ' +
+                        'alt="A bison eating grass in Yellowstone National Park"><br>';
       popup3_content += 'Source: NPS/Neal Herbert, <a href="https://www.nps.gov/yell/learn/photosmultimedia/sounds-bisoneating.htm">NPS</a>';
       var popup3 = new mapboxgl.Popup({ minWidth: '300px' })
         .setHTML(popup3_content);
+
+      // Popup for marker 4 iraq
+      var popup4_content = '<h2>Listen to combat footage from Haditha Desert, Iraq</h2><br>';
+      popup4_content += '<iframe width="300px" src="https://www.youtube.com/embed/CuPiv2MT3N8" ' +
+                        'frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" ' +
+                        'allowfullscreen></iframe><br>';
+      popup4_content += 'Source: <a href="https://www.youtube.com/watch?v=CuPiv2MT3N8">YouTube</a>';
+      var popup4 = new mapboxgl.Popup({ minWidth: '300px' })
+        .setHTML(popup4_content);
       /***  END POPUPS  ***/
 
       /***  MARKERS  ***/
-      var marker1 = new mapboxgl.Marker({ color: 'DarkRed' })
+      var marker1 = new mapboxgl.Marker({ color: 'Yellow' })
         .setLngLat([-122.6788, 45.5212])
         .setPopup(popup1)
         .addTo(map);
 
-      var marker2 = new mapboxgl.Marker({ color: 'DarkRed' })
+      var marker2 = new mapboxgl.Marker({ color: 'Yellow' })
         .setLngLat([-0.1534307, 51.501223])
         .setPopup(popup2)
         .addTo(map);
 
-      var marker3 = new mapboxgl.Marker({ color: 'DarkRed' })
+      var marker3 = new mapboxgl.Marker({ color: 'Yellow' })
         .setLngLat([-110.74524187568, 44.706216445069])
         .setPopup(popup3)
+        .addTo(map);
+
+      var marker4 = new mapboxgl.Marker({ color: 'Yellow' })
+        .setLngLat([42.3733, 34.1256])
+        .setPopup(popup4)
         .addTo(map);
       /***  END MARKERS  ***/
 
       /***  LISTENERS  ***/
       document.getElementById('LondonButton').addEventListener('click', function () {
-        map.jumpTo({
-          center: [-0.1534307, 51.501223],
-          zoom: 11
-        });
+        map.jumpTo({ center: [-0.1534307, 51.501223], zoom: 11 });
       });
 
       document.getElementById('PortlandButton').addEventListener('click', function () {
-        map.jumpTo({
-          center: [-122.6788, 45.5212],
-          zoom: 9
-        });
+        map.jumpTo({ center: [-122.6788, 45.5212], zoom: 9 });
       });
 
       document.getElementById('YellowstoneButton').addEventListener('click', function () {
-        map.jumpTo({
-          center: [-110.74524187568, 44.706216445069],
-          zoom: 9
-        });
+        map.jumpTo({ center: [-110.74524187568, 44.706216445069], zoom: 9 });
+      });
+
+      document.getElementById('HadithaButton').addEventListener('click', function () {
+        map.jumpTo({ center: [42.3733, 34.1256], zoom: 9 });
       });
       /***  END LISTENERS  ***/
     </script>

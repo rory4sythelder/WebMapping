@@ -308,9 +308,9 @@
 
   <!-- Bottom-left Info Text -->
   <div id="info-text">
-    <h4 style="text-align: center;">Find Your West Coast Ski Area</h4>
+    <h4 style="text-align: center;">Find Your Western USA Ski Area</h4>
     Created by Rory Forsythe-Elder. Website last updated June 3, 2025. Website optimized for laptop/desktop viewing.<br>
-    Ski areas included on map if they have at least one conventional ski lift (exception for the buses at Moose Mountain in Alaska). Passes are based on pricing for a 30 year-old adult without special status (veteran, college student, etc). Day passes are based on a standard, non-holiday weekday and season passes are based on the cheapest available pass with no blackout dates.
+    States included: California, Nevada, Arizona, Oregon, Idaho, Washington, Alaska. Ski areas are included on the map if they have at least one conventional ski lift (exception for the buses at Moose Mountain in Alaska). Passes are based on pricing for a 30 year-old adult without special status (veteran, college student, etc). Day passes are based on a standard, non-holiday weekday and season passes are based on the cheapest available pass with no blackout dates.
   </div>
 
   <script>
@@ -499,8 +499,8 @@
         { name:"Eaglecrest Ski Area",     lat:58.2723,      lon:-134.5092,      dayUrl:"", seasonUrl:"", seasonPass:870, dayPass:75 }, 
         { name:"Hilltop Ski Area",        lat:61.1410479,   lon:-149.738648143671, dayUrl:"", seasonUrl:"", seasonPass:610, dayPass:41 },
         { name:"Mount Eyak",              lat:60.54278,     lon:-145.7575,      dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
-        { name:"Ski Land",                lat:65.068521,    lon:-147.443936,    dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
-        { name:"Moose Mountain",          lat:64.9406,    lon:-147.9906,    dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null } 
+        { name:"Ski Land",                lat:65.068521,    lon:-147.443936,    dayUrl:"https://skilandfairbanks.com/passes/", seasonUrl:"", seasonPass:625, dayPass:null },
+        { name:"Moose Mountain",          lat:64.9406,    lon:-147.9906,    dayUrl:"https://shredthemoose.com/passes-tickets-2/", seasonUrl:"", seasonPass:null, dayPass:55 } 
  
 
     ];
@@ -543,8 +543,8 @@
                       <strong>${r.name}</strong>
                       <div class="popup-text">Season Pass: ${r.seasonPass !== null ? '$' + r.seasonPass.toLocaleString() : 'NULL'}</div>
                       <div class="popup-text">Day Pass:   ${r.dayPass    !== null ? '$' + r.dayPass.toLocaleString()    : 'NULL'}</div>
-                      <a class="popup-link" href="${r.dayUrl}"    target="_blank">Buy Tickets</a>
-                      
+                      <a class="popup-link" href="${r.dayUrl}"    target="_blank">Buy Day Pass</a>
+                      <a class="popup-link" href="${r.seasonUrl}" target="_blank">Buy Season Pass Info</a>
                     `)
                     .addTo(map);
       });

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Ski Resorts Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/> 
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Google Fonts: Inter, Montserrat, Playfair Display -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Montserrat:wght@400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-base: 'Inter', sans-serif;
+      --font-heading: 'Playfair Display', serif;
+      --font-toggle: 'Montserrat', sans-serif;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: var(--font-base);
+    }
+    #map { width: 100%; height: 100%; }
+
+    /* Controls */
+    #controls {
+      position: absolute;
+      top: 90%; left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: black;
+      padding: 6px 8px;
+      border-radius: 4px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      color: white;
+      font-family: var(--font-base);
+    }
+    .pass-toggle, .price-toggle {
+      margin-right: 8px;
+      font-size: 0.9em;
+      font-family: var(--font-toggle);
+    }
+    #address-input {
+      width: 180px;
+      padding: 4px;
+      font-family: var(--font-base);
+    }
+    #address-submit {
+      padding: 4px 8px;
+      margin-right: 12px;
+      font-family: var(--font-base);
+    }
+
+    /* Results panel */
+    #results {
+      position: absolute;
+      bottom: 2%; left: 1%;
+      max-height: 300px;
+      overflow-y: auto;
+      background: rgba(255,255,255,0.9);
+      padding: 30px;
+      border-radius: 4px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      font-family: var(--font-base);
+      font-size: 1.2em;
+      display: none;
+      z-index: 99999;
+    }
+    #results h4 {
+      margin: 0 0 6px;
+      font-family: var(--font-heading);
+    }
+    #results ol { margin: 0; padding-left: 20px; }
+
+    /* Popups */
+    .popup-text, .popup-link {
+      font-family: var(--font-base);
+    }
+    .popup-link { 
+      display: block;
+      margin-top: 6px;
+      font-size: 1.2em;
+    }
+    .leaflet-popup-content { /* ensure map popups match */
+      font-family: var(--font-base);
+    }
+
+    /* Pass info popup */
+    #pass-info {
+      position: absolute;
+      bottom: 2%;
+      right: 1%;
+      width: 300px;
+      background: rgba(255,255,255,0.95);
+      padding: 10px;
+      border-radius: 4px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      font-family: var(--font-base);
+      font-size: 1em;
+      display: none;
+      z-index: 10000;
+    }
+    #pass-info h4 {
+      margin: 0 0 6px;
+      font-size: 1.2em;
+      font-family: var(--font-heading);
+    }
+    #pass-info p {
+      margin: 4px 0;
+    }
+    #pass-info a {
+      color: #0074D9;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    /* Header Text */
+    #info-text {
+      position: absolute;
+      top: 2%; left: 50%;
+      transform: translateX(-50%);
+      width: 1200px;
+      background: rgba(255,255,255,0.8);
+      padding: 8px;
+      border-radius: 4px;
+      font-family: var(--font-base);
+      font-size: 1em;
+      line-height: 1.2em;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      z-index: 10000;
+    }
+    #info-text h4 {
+      margin: 0 0 4px;
+      font-size: 1.4em;
+      font-weight: bold;
+      font-family: var(--font-heading);
+    }
+  </style>
+</head>
+<body>
+  <!-- Controls -->
+  <div id="controls">
+    <!-- Price-Type Filter -->
+    <label class="price-toggle">
+      <input type="radio" name="price-type" value="day" id="price-day" checked>
+      Day Pass
+    </label>
+    <label class="price-toggle">
+      <input type="radio" name="price-type" value="season" id="price-season">
+      Season Pass
+    </label>
+
+    <input id="address-input" type="text" placeholder="Enter your address here" />
+    <button id="address-submit">Go</button>
+
+    <!-- Pass Toggles -->
+    <label class="pass-toggle">
+      <input type="checkbox" id="indy-toggle" /> <span>Indy Pass</span>
+    </label>
+    <label class="pass-toggle">
+      <input type="checkbox" id="ikon-toggle" /> <span>Ikon Pass</span>
+    </label>
+    <label class="pass-toggle">
+      <input type="checkbox" id="epic-toggle" /> <span>Epic Pass</span>
+    </label>
+    <label class="pass-toggle">
+      <input type="checkbox" id="freedom-toggle" /> <span>Freedom Pass</span>
+    </label>
+  </div>
+
+  <!-- Map -->
+  <div id="map"></div>
+
+  <!-- Results -->
+  <div id="results">
+    <h4>Closest Resorts to You (by drive time)</h4>
+    <ol id="results-list"></ol>
+  </div>
+
+  <!-- Pass Info Panel -->
+  <div id="pass-info"></div>
+
+  <!-- Bottom-left Info Text -->
+  <div id="info-text">
+    <h4 style="text-align: center;">Find Your West Coast Ski Area</h4>
+    Created by Rory Forsythe-Elder. Website last updated May 28, 2025. <br>
+    Ski areas included on map if they have at least one conventional ski lift. Passes are based on pricing for a 30 year-old adult without special status (veteran, college student, etc). Day passes are based on a standard, non-holiday weekday and season passes are based on the cheapest available pass with no blackout dates.
+  </div>
+
+ 
+  <script>
+    const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoicm9yeTRzeXRoZWxkZXIiLCJhIjoiY205MXV2eXh1MDUxejJqb2VyOXlqcHduMSJ9.jayP103_JPGAKudstFC6Zw';
+    const map = L.map('map').setView([46.5, -120.0], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // pass membership lists
+    const ikonNames = [
+      "Palisades Tahoe","Sierra-at-Tahoe Resort","Mammoth Mountain",
+      "June Mountain","Big Bear Mountain Resort","Snow Valley Mountain Resort",
+      "Mt. Bachelor","Crystal Mountain","The Summit at Snoqualmie"
+    ];
+    const epicNames = [
+      "Northstar California Resort","Stevens Pass",
+      "Heavenly Mountain Resort","Kirkwood Mountain Resort"
+    ];
+    const freedomNames = [
+      "Mt. Ashland Ski Area","Mount Spokane"
+    ];
+    const indyNames = [
+      "Hoodoo Ski Area","Cooper Spur Ski Area","Mt. Hood Meadows",
+      "Ski Bluewood","White Pass","Hurricane Ridge","49° North Mountain Resort",
+      "Loup Loup Ski Bowl","Mission Ridge","Mount Shasta Ski Park",
+      "China Peak Mountain Resort","Mountain High Resort",
+      "Dodge Ridge Mountain Resort","Bear Valley Mountain Resort"
+    ];
+
+    // build a DivIcon with snowflake + floating price label
+function getSnowIcon(borderColor = '', priceText = '') {
+  const innerBorder = borderColor ? 4 : 0;
+  const size = 20 + innerBorder * 2;
+  return L.divIcon({
+    html: `
+      <div style="
+        position: relative;
+        width: ${size}px;
+        height: ${size + 14}px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      ">
+        <!-- price label uses Montserrat now -->
+        <div style="
+          position: absolute;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 10px;
+          font-family: var(--font-toggle);
+          background: white;
+          padding: 1px 3px;
+          border-radius: 2px;
+        ">${priceText}</div>
+        <div style="
+          margin-top: 14px;
+          width: ${size}px;
+          height: ${size}px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20px;
+          color: red;
+          ${borderColor ? `border: ${innerBorder}px solid ${borderColor}; box-shadow: 0 0 0 2px black;` : ''}
+          border-radius: 50%;
+        ">
+          ❄️
+        </div>
+      </div>
+    `,
+    className: '',
+    iconSize: [size, size + 14],
+    iconAnchor: [size / 2, (size + 14) / 2]
+  });
+}
+
+
+    const skiResortsWithMarkers = [];
+    let redRoutes = [];
+
+    // full list with dayPass & seasonPass
+    const skiResorts = [
+      // — Oregon —
+      { name:"Mt. Hood Skibowl", lat:45.30189, lon:-121.773212, dayUrl:"https://skibowl.com/tickets-passes/daily-lift-tickets/", seasonUrl:"https://skibowl.com/tickets-passes/season-passes/", seasonPass:689,  dayPass:149 },
+      { name:"Mt. Hood Meadows", lat:45.32889, lon:-121.66250,  dayUrl:"https://www.skihood.com/winter/tickets",              seasonUrl:"https://www.skihood.com/store/tickets-and-passes",      seasonPass:519,  dayPass:59  },
+      { name:"Timberline Lodge", lat:45.33111, lon:-121.71000,  dayUrl:"https://www.timberlinelodge.com/activities/lift-tickets", seasonUrl:"https://tickets.timberlinelodge.com/",                seasonPass:1149, dayPass:114 },
+      { name:"Cooper Spur Ski Area", lat:45.412218, lon:-121.605329, dayUrl:"https://cooperspur.com/lift-tickets/",                 seasonUrl:"https://cooperspur.com/season-passes/",               seasonPass:259,  dayPass:52  },
+      { name:"Hoodoo Ski Area", lat:44.40900, lon:-121.87200,  dayUrl:"https://www.hoodoo.com/tickets",                        seasonUrl:"https://skihoodoo.com/rates/season-passes/",           seasonPass:699,  dayPass:75  },
+      { name:"Willamette Pass Resort", lat:43.600964, lon:-122.036115, dayUrl:"https://www.willamettepass.com/tickets/",              seasonUrl:"https://www.willamettepass.ski/season-passes/",         seasonPass:1149, dayPass:29  },
+      { name:"Mt. Bachelor", lat:43.97430, lon:-121.68640,  dayUrl:"https://www.mtbachelor.com/lift-tickets",            seasonUrl:"https://shop.mtbachelor.com/full-season-passes",       seasonPass:1449, dayPass:194 },
+      { name:"Mt. Ashland Ski Area", lat:42.08333, lon:-122.71667,  dayUrl:"https://mashland.com/lift-tickets",                  seasonUrl:"https://www.mtashland.com/season-passes/",             seasonPass:699,  dayPass:72  },
+      { name:"Anthony Lakes Ski Area", lat:44.96409, lon:-118.234482, dayUrl:"https://www.anthonylakes.com/lift-tickets/",          seasonUrl:"https://anthonylakes.com/season-passes/",             seasonPass:525,  dayPass:50  },
+      { name:"Warner Canyon Ski Area", lat:42.23749, lon:-120.29583,  dayUrl:"https://warnerski.com/tickets/",                     seasonUrl:"https://warnercanyon.org/tickets-and-passes/",         seasonPass:null, dayPass:null },
+
+      // — Washington —
+      { name:"49° North Mountain Resort", lat:48.30100, lon:-117.56300, dayUrl:"https://www.ski49n.com/index.php/tickets/day-tickets", seasonUrl:"https://www.ski49n.com/index.php/tickets/season-passes", seasonPass:659,  dayPass:79  },
+      { name:"Ski Bluewood", lat:46.08200, lon:-117.85100, dayUrl:"https://www.bluewood.com/tickets",                    seasonUrl:"https://www.bluewood.com/24-25-season-pass",           seasonPass:699,  dayPass:59  },
+      { name:"Crystal Mountain", lat:46.9282, lon:-121.5045, dayUrl:"https://www.crystalmountainresort.com/plan-your-trip/tickets-and-passes/day-tickets/", seasonUrl:"https://www.crystalmountainresort.com/plan-your-trip/tickets-and-passes/season-passes/", seasonPass:1699, dayPass:149 },
+      { name:"Echo Valley Ski Area", lat:47.93583, lon:-120.05611, dayUrl:"https://skiechovalley.com/tickets",                   seasonUrl:"https://skiechovalley.com/tickets",                 seasonPass:null, dayPass:null },
+      { name:"Hurricane Ridge", lat:47.97100, lon:-123.49300, dayUrl:"http://www.hurricaneridge.net/",                      seasonUrl:"http://www.hurricaneridge.net/",                      seasonPass:null, dayPass:null },
+      { name:"Leavenworth Ski Hill", lat:47.61437, lon:-120.66859, dayUrl:"https://skileavenworth.com/tickets/day-tickets",       seasonUrl:"https://skileavenworth.com/tickets/season-passes",    seasonPass:null, dayPass:null },
+      { name:"Loup Loup Ski Bowl", lat:48.39472, lon:-119.91278, dayUrl:"https://www.skitheloup.com/",                          seasonUrl:"https://www.skitheloup.com/",                        seasonPass:null, dayPass:null },
+      { name:"Mission Ridge", lat:47.29200, lon:-120.39900, dayUrl:"https://www.missionridge.com/tickets",                seasonUrl:"https://www.missionridge.com/season-passes",          seasonPass:629,  dayPass:99  },
+      { name:"Mt. Baker Ski Area", lat:48.86200, lon:-121.65400, dayUrl:"https://www.mtbaker.us/tickets-and-passes/daily-lift-tickets/", seasonUrl:"https://www.mtbaker.us/tickets-and-passes/",            seasonPass:1102, dayPass:91 },
+      { name:"Mount Spokane", lat:47.92200, lon:-117.09700, dayUrl:"https://www.mtspokane.com/",                           seasonUrl:"https://www.mtspokane.com/",                          seasonPass:849,  dayPass:60  },
+      { name:"Sitzmark Ski Area", lat:48.86500, lon:-119.16400, dayUrl:"https://www.facebook.com/SitzmarkSkiArea",             seasonUrl:"https://www.facebook.com/SitzmarkSkiArea",            seasonPass:null, dayPass:null },
+      { name:"Stevens Pass", lat:47.74500, lon:-121.09330, dayUrl:"https://www.stevenspass.com/tickets",                 seasonUrl:"https://www.stevenspass.com/seasons-passes",          seasonPass:949,  dayPass:120 },
+      { name:"The Summit at Snoqualmie", lat:47.42400, lon:-121.41600, dayUrl:"https://www.summitatsnoqualmie.com/tickets",          seasonUrl:"https://www.summitatsnoqualmie.com/tickets/season-passes", seasonPass:799,  dayPass:83  },
+      { name:"White Pass", lat:46.6387,   lon:-121.3895, dayUrl:"https://skiwhitepass.com/the-mountain/lift-tickets", seasonUrl:"https://skiwhitepass.com/the-mountain/season-passes", seasonPass:839,  dayPass:85  },
+
+      // — California —
+      { name:"Palisades Tahoe", lat:39.19720, lon:-120.23810,  dayUrl:"", seasonUrl:"", seasonPass:1449, dayPass:289 },
+      { name:"Mammoth Mountain", lat:37.64858, lon:-118.97210,  dayUrl:"", seasonUrl:"", seasonPass:1449, dayPass:219 },
+      { name:"Heavenly Mountain Resort", lat:38.93506, lon:-119.93974,  dayUrl:"", seasonUrl:"", seasonPass:707,  dayPass:232 },
+      { name:"Kirkwood Mountain Resort", lat:38.68475, lon:-120.06540,  dayUrl:"", seasonUrl:"", seasonPass:707,  dayPass:143 },
+      { name:"Northstar California Resort", lat:39.27340, lon:-120.13460,  dayUrl:"", seasonUrl:"", seasonPass:1107, dayPass:237 },
+      { name:"Alpine Meadows", lat:39.16510, lon:-120.23830,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Sugar Bowl Resort", lat:39.33180, lon:-120.30920,  dayUrl:"", seasonUrl:"", seasonPass:1399,dayPass:162 },
+      { name:"Sierra-at-Tahoe Resort", lat:38.81250, lon:-120.11960,  dayUrl:"", seasonUrl:"", seasonPass:629,  dayPass:145 },
+      { name:"June Mountain", lat:37.78750, lon:-119.03450,  dayUrl:"", seasonUrl:"", seasonPass:1699, dayPass:139 },
+      { name:"Bear Valley Mountain Resort", lat:38.13580, lon:-119.62500,  dayUrl:"", seasonUrl:"", seasonPass:649,  dayPass:139 },
+      { name:"Dodge Ridge Mountain Resort", lat:37.84550, lon:-119.80880,  dayUrl:"", seasonUrl:"", seasonPass:849,  dayPass:129 },
+      { name:"China Peak Mountain Resort", lat:37.38440, lon:-119.38900,  dayUrl:"", seasonUrl:"", seasonPass:849,  dayPass:null },
+      { name:"Homewood Mountain Resort", lat:38.96490, lon:-120.10660,  dayUrl:"", seasonUrl:"", seasonPass:949,  dayPass:104 },
+      { name:"Mount Shasta Ski Park", lat:41.31020, lon:-122.32780,  dayUrl:"", seasonUrl:"", seasonPass:699,  dayPass:99  },
+      { name:"Badger Pass Ski Area", lat:37.73310, lon:-119.63700,  dayUrl:"", seasonUrl:"", seasonPass:150,  dayPass:47  },
+      { name:"Donner Ski Ranch", lat:39.30340, lon:-120.30350,  dayUrl:"", seasonUrl:"", seasonPass:549,  dayPass:109 },
+      { name:"Boreal Mountain Resort", lat:39.33130, lon:-120.27760,  dayUrl:"", seasonUrl:"", seasonPass:659,  dayPass:139 },
+      { name:"Soda Springs Mountain Resort", lat:39.30340, lon:-120.30390,  dayUrl:"", seasonUrl:"", seasonPass:279,  dayPass:119 },
+      { name:"Tahoe Donner Downhill Ski Area", lat:39.32480, lon:-120.22090, dayUrl:"", seasonUrl:"", seasonPass:773,  dayPass:54  },
+      { name:"Granlibakken Tahoe", lat:39.33470, lon:-120.18520,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Big Bear Mountain Resort", lat:34.23630, lon:-116.85620,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Snow Summit", lat:34.25600, lon:-117.03020,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Snow Valley Mountain Resort", lat:34.28240, lon:-117.17740,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Mountain High Resort", lat:34.30940, lon:-117.69010,  dayUrl:"", seasonUrl:"", seasonPass:849,  dayPass:119 },
+      { name:"Mt. Baldy Resort", lat:34.23620, lon:-117.65620,  dayUrl:"", seasonUrl:"", seasonPass:599,  dayPass:69 },
+      { name:"Mount Waterman", lat:34.27640, lon:-118.17690,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Buckhorn Ski and Snowboard Club", lat:37.79850, lon:-120.06840, dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Alta Sierra at Shirley Meadows", lat:36.09560, lon:-118.40620, dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Coppervale Ski Area", lat:39.77620, lon:-120.47220,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+
+      // Nevada
+      { name:"Lee Canyon", lat:36.301638, lon:-115.680759,  dayUrl:"", seasonUrl:"", seasonPass:1049, dayPass:59 },
+      { name:"Mount Rose", lat:39.329167, lon:-119.885833,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Diamond Peak", lat:39.254, lon:-119.924,  dayUrl:"", seasonUrl:"", seasonPass:509, dayPass:244 },
+      { name:"Sky Tavern", lat:39.3365761, lon:-119.8735225,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Elko Sno Bowl", lat:40.9091, lon:-115.8524,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+
+      //Arizona
+      { name:"Arizona Snowbowl", lat:35.330, lon:-111.705,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Mt. Lemmon Ski Valley", lat:32.452222, lon:-110.783889,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Sunrise Park Resort", lat:33.973333, lon:-109.564722,  dayUrl:"", seasonUrl:"", seasonPass:689, dayPass:79 }
+    
+      ]
+    // add markers
+    skiResorts.forEach(r => {
+      const entry = { resort: r };
+      skiResortsWithMarkers.push(entry);
+    });
+
+    // refresh all icons based on toggles & price-type
+    function refreshIcons() {
+      const ikonOn    = document.getElementById('ikon-toggle').checked;
+      const epicOn    = document.getElementById('epic-toggle').checked;
+      const freedomOn = document.getElementById('freedom-toggle').checked;
+      const indyOn    = document.getElementById('indy-toggle').checked;
+      const priceType = document.querySelector('input[name="price-type"]:checked').value;
+
+      // remove existing markers
+      skiResortsWithMarkers.forEach(e => {
+        if (e.marker) map.removeLayer(e.marker);
+      });
+
+      // re-add with updated icon
+      skiResortsWithMarkers.forEach(e => {
+        const r = e.resort;
+        let border = '';
+        if (ikonOn    && ikonNames.includes(r.name))    border = 'yellow';
+        if (epicOn    && epicNames.includes(r.name))    border = 'orange';
+        if (freedomOn && freedomNames.includes(r.name)) border = 'blue';
+        if (indyOn    && indyNames.includes(r.name))    border = 'red';
+
+        const raw = priceType === 'day' ? r.dayPass : r.seasonPass;
+        const priceText = raw !== null ? '$' + raw.toLocaleString() : 'NULL';
+
+        const icon = getSnowIcon(border, priceText);
+
+        e.marker = L.marker([r.lat, r.lon], { icon })
+                    .bindPopup(`
+                      <strong>${r.name}</strong>
+                      <div class="popup-text">Season Pass: ${r.seasonPass !== null ? '$' + r.seasonPass.toLocaleString() : 'NULL'}</div>
+                      <div class="popup-text">Day Pass:   ${r.dayPass    !== null ? '$' + r.dayPass.toLocaleString()    : 'NULL'}</div>
+                      <a class="popup-link" href="${r.dayUrl}"    target="_blank">Buy Tickets</a>
+                      <a class="popup-link" href="${r.seasonUrl}" target="_blank">Season Pass Info</a>
+                    `)
+                    .addTo(map);
+      });
+    }
+
+    // initial render
+    refreshIcons();
+
+    // bind toggles
+    ['ikon-toggle','epic-toggle','freedom-toggle','indy-toggle']
+      .forEach(id => document.getElementById(id).addEventListener('change', refreshIcons));
+    document.querySelectorAll('input[name="price-type"]')
+      .forEach(radio => radio.addEventListener('change', refreshIcons));
+
+    // pass info panel
+    function updatePassInfo() {
+      const info = document.getElementById('pass-info');
+      let html = '';
+      if (document.getElementById('indy-toggle').checked) {
+        html += `<h4>Indy Pass</h4>
+                 <p>For $369, the Indy Pass offers two days each across 230+ ski destinations across the United States, Canada, Europe and Japan. Popular resorts include Big White, Loveland, and Mount Shasta. <br> Learn more at <a href="https://www.indyskipass.com/" target="_blank">indyskipass.com</a>.</p>`;
+      }
+      if (document.getElementById('epic-toggle').checked) {
+        html += `<h4>Epic Pass</h4>
+                 <p>For $1,051, the Epic Pass gives unlimited access to 42 resorts owned and operated by Vail Resorts, as well as limited access to dozens partner resorts, across North America, Europe, and Australia. Popular resorts include Vail, Park City, and Heavenly. <br> Learn more at <a href="https://www.epicpass.com/" target="_blank">epicpass.com</a>.</p>`;
+      }
+      if (document.getElementById('ikon-toggle').checked) {
+        html += `<h4>Ikon Pass</h4>
+                 <p>For $1,429, the Ikon Pass gives unlimited access to 18 resorts and up to 7 days of skiing at 41 additional resorts. Popular resorts include Aspen, Big Bear, and Jackson Hole. <br> Learn more at <a href="https://www.ikonpass.com/" target="_blank">ikonpass.com</a>.</p>`;
+      }
+      if (document.getElementById('freedom-toggle').checked) {
+        html += `<h4>Freedom Pass</h4>
+                 <p>With purchase of a season pass at participating resorts, the Freedom Pass gives access to 22 resorts. Popular resorts include Mount Ashland, Mount Spokane, and Bogus Basin. <br> Learn more at <a href="https://skifreedompass.com/" target="_blank">skifreedompass.com</a>.</p>`;
+      }
+      if (html) {
+        info.innerHTML = html;
+        info.style.display = 'block';
+      } else {
+        info.style.display = 'none';
+      }
+    }
+    ['indy-toggle','epic-toggle','ikon-toggle','freedom-toggle']
+      .forEach(id => document.getElementById(id).addEventListener('change', updatePassInfo));
+
+    // haversine & routing
+    function haversine(lat1, lon1, lat2, lon2) {
+      const R = 6371, toRad = d => d * Math.PI / 180;
+      const dLat = toRad(lat2 - lat1), dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2)**2 +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+      return 2 * R * Math.asin(Math.sqrt(a));
+    }
+
+    document.getElementById('address-submit').onclick = async () => {
+      const addr = document.getElementById('address-input').value.trim();
+      if (!addr) return alert('Please enter an address.');
+      const geo = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(addr)}.json` +
+        `?limit=1&access_token=${MAPBOX_ACCESS_TOKEN}`
+      ).then(r => r.json());
+      if (!geo.features.length) return alert('Address not found.');
+
+      const [userLon, userLat] = geo.features[0].center;
+      const nearest = skiResorts
+        .map(r => ({ ...r, dist: haversine(userLat, userLon, r.lat, r.lon) }))
+        .sort((a,b) => a.dist - b.dist).slice(0,24);
+
+      const coords = [ `${userLon},${userLat}`, ...nearest.map(r => `${r.lon},${r.lat}`) ].join(';');
+      const mat = await fetch(
+        `https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${coords}` +
+        `?sources=0&destinations=${nearest.map((_,i)=>i+1).join(';')}` +
+        `&annotations=duration&access_token=${MAPBOX_ACCESS_TOKEN}`
+      ).then(r => r.json());
+      if (!mat.durations) return alert('Routing failed.');
+
+      nearest.forEach((r,i) => r.driveTime = mat.durations[0][i]);
+      const top10 = nearest.sort((a,b) => a.driveTime - b.driveTime).slice(0,10);
+
+      const resultsDiv = document.getElementById('results'),
+            list = document.getElementById('results-list');
+      list.innerHTML = '';
+      top10.forEach(r => {
+        const mins = Math.round(r.driveTime/60);
+        const li = document.createElement('li');
+        li.textContent = `${r.name} — ${mins} min drive`;
+        list.appendChild(li);
+      });
+      resultsDiv.style.display = 'block';
+
+      map.setView([userLat, userLon], 8);
+      L.marker([userLat, userLon], {
+        icon: L.icon({
+          iconUrl: 'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2.png',
+          iconSize: [27, 43],
+          iconAnchor: [13, 41],
+          popupAnchor: [0, -40]
+        })
+      }).bindPopup('Your location').addTo(map).openPopup();
+
+      redRoutes.forEach(line => map.removeLayer(line));
+      redRoutes = [];
+
+      for (const r of top10) {
+        const routeResp = await fetch(
+          `https://api.mapbox.com/directions/v5/mapbox/driving/${userLon},${userLat};${r.lon},${r.lat}` +
+          `?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`
+        ).then(res => res.json());
+        if (routeResp.routes && routeResp.routes.length) {
+          const coords = routeResp.routes[0].geometry.coordinates.map(([lon,lat]) => [lat,lon]);
+          const line = L.polyline(coords, { color: 'red', weight: 3 }).addTo(map);
+          redRoutes.push(line);
+        }
+      }
+    };
+
+    document.getElementById('address-input')
+      .addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('address-submit').click(); });
+  </script>
+</body>
+</html>

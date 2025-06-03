@@ -544,7 +544,7 @@
                       <div class="popup-text">Season Pass: ${r.seasonPass !== null ? '$' + r.seasonPass.toLocaleString() : 'NULL'}</div>
                       <div class="popup-text">Day Pass:   ${r.dayPass    !== null ? '$' + r.dayPass.toLocaleString()    : 'NULL'}</div>
                       <a class="popup-link" href="${r.dayUrl}"    target="_blank">Buy Day Pass</a>
-                      <a class="popup-link" href="${r.seasonUrl}" target="_blank">Buy Season Pass Info</a>
+                      <a class="popup-link" href="${r.seasonUrl}" target="_blank">Buy Season Pass</a>
                     `)
                     .addTo(map);
       });
@@ -567,13 +567,13 @@
         html += `<h4>Indy Pass</h4>
                  <p>For $369, the Indy Pass offers two days each across 230+ ski destinations across the United States, Canada, Europe and Japan. Popular resorts include Big White, Loveland, and Mount Shasta. <br> Learn more at <a href="https://www.indyskipass.com/" target="_blank">indyskipass.com</a>.</p>`;
       }
-      if (document.getElementById('epic-toggle').checked) {
-        html += `<h4>Epic Pass</h4>
-                 <p>For $1,051, the Epic Pass gives unlimited access to 42 resorts owned and operated by Vail Resorts, as well as limited access to dozens partner resorts, across North America, Europe, and Australia. Popular resorts include Vail, Park City, and Heavenly. <br> Learn more at <a href="https://www.epicpass.com/" target="_blank">epicpass.com</a>.</p>`;
-      }
       if (document.getElementById('ikon-toggle').checked) {
         html += `<h4>Ikon Pass</h4>
                  <p>For $1,429, the Ikon Pass gives unlimited access to 18 resorts and up to 7 days of skiing at 41 additional resorts. Popular resorts include Aspen, Big Bear, and Jackson Hole. <br> Learn more at <a href="https://www.ikonpass.com/" target="_blank">ikonpass.com</a>.</p>`;
+      }
+      if (document.getElementById('epic-toggle').checked) {
+        html += `<h4>Epic Pass</h4>
+                 <p>For $1,051, the Epic Pass gives unlimited access to 42 resorts owned and operated by Vail Resorts, as well as limited access to dozens partner resorts, across North America, Europe, and Australia. Popular resorts include Vail, Park City, and Heavenly. <br> Learn more at <a href="https://www.epicpass.com/" target="_blank">epicpass.com</a>.</p>`;
       }
       if (document.getElementById('freedom-toggle').checked) {
         html += `<h4>Freedom Pass</h4>

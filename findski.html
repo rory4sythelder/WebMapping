@@ -310,7 +310,7 @@
   <div id="info-text">
     <h4 style="text-align: center;">Find Your West Coast Ski Area</h4>
     Created by Rory Forsythe-Elder. Website last updated June 3, 2025. Website optimized for laptop/desktop viewing.<br>
-    Ski areas included on map if they have at least one conventional ski lift. Passes are based on pricing for a 30 year-old adult without special status (veteran, college student, etc). Day passes are based on a standard, non-holiday weekday and season passes are based on the cheapest available pass with no blackout dates.
+    Ski areas included on map if they have at least one conventional ski lift (exception for the buses at Moose Mountain in Alaska). Passes are based on pricing for a 30 year-old adult without special status (veteran, college student, etc). Day passes are based on a standard, non-holiday weekday and season passes are based on the cheapest available pass with no blackout dates.
   </div>
 
   <script>
@@ -332,21 +332,23 @@
     const ikonNames = [
       "Palisades Tahoe","Sierra-at-Tahoe Resort","Mammoth Mountain",
       "June Mountain","Big Bear Mountain Resort","Snow Valley Mountain Resort",
-      "Mt. Bachelor","Crystal Mountain","The Summit at Snoqualmie"
+      "Mt. Bachelor","Crystal Mountain","The Summit at Snoqualmie","Schweitzer Mountain","Sun Valley", "Alyeska Resort"
     ];
     const epicNames = [
       "Northstar California Resort","Stevens Pass",
       "Heavenly Mountain Resort","Kirkwood Mountain Resort"
     ];
     const freedomNames = [
-      "Mt. Ashland Ski Area","Mount Spokane"
+      "Mt. Ashland Ski Area","Mount Spokane", "Bogus Basin", "Eaglecrest Ski Area"
     ];
     const indyNames = [
       "Hoodoo Ski Area","Cooper Spur Ski Area","Mt. Hood Meadows",
       "Ski Bluewood","White Pass","Hurricane Ridge","49° North Mountain Resort",
       "Loup Loup Ski Bowl","Mission Ridge","Mount Shasta Ski Park",
       "China Peak Mountain Resort","Mountain High Resort",
-      "Dodge Ridge Mountain Resort","Bear Valley Mountain Resort", "Sunrise Park Resort"
+      "Dodge Ridge Mountain Resort","Bear Valley Mountain Resort", 
+      "Sunrise Park Resort", "Silver Mountain", "Brundage Mountain", "Tamarack", 
+      "Soldier Mountain", "Pomerelle", "Kelly Canyon","Moose Mountain","Arctic Valley","Mount Eyak"
     ];
 
     // build a DivIcon with snowflake + floating price label
@@ -474,10 +476,33 @@
       // Arizona
       { name:"Arizona Snowbowl", lat:35.330, lon:-111.705,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
       { name:"Mt. Lemmon Ski Valley", lat:32.452222, lon:-110.783889,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
-      { name:"Sunrise Park Resort", lat:33.973333, lon:-109.564722,  dayUrl:"", seasonUrl:"", seasonPass:689, dayPass:79 }
+      { name:"Sunrise Park Resort", lat:33.973333, lon:-109.564722,  dayUrl:"", seasonUrl:"", seasonPass:689, dayPass:79 },
 
-      //Idaho
-      
+    
+      // Idaho
+        { name:"Bald Mountain", lat:43.654847, lon:-114.409368, dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null }, 
+        { name:"Bogus Basin", lat:43.76468, lon:-116.10329, dayUrl:"", seasonUrl:"", seasonPass:549, dayPass:84 }, 
+        { name:"Brundage Mountain", lat:45.0036, lon:-116.1597, dayUrl:"", seasonUrl:"", seasonPass:999, dayPass:95 }, 
+        { name:"Kelly Canyon", lat:43.63932793, lon:-111.6166865, dayUrl:"", seasonUrl:"", seasonPass:989, dayPass:79 },
+        { name:"Lookout Pass", lat:47.4549307, lon:-115.6968233, dayUrl:"", seasonUrl:"", seasonPass:399, dayPass:55 }, 
+        { name:"Pebble Creek", lat:42.7757493, lon:-112.1527444, dayUrl:"", seasonUrl:"", seasonPass:568, dayPass:76 }, 
+        { name:"Pomerelle", lat:42.31213, lon:-113.61195, dayUrl:"", seasonUrl:"", seasonPass:575, dayPass:68 }, 
+        { name:"Schweitzer Mountain", lat:48.380368, lon:-116.633828, dayUrl:"", seasonUrl:"", seasonPass:1449, dayPass:120 }, 
+        { name:"Silver Mountain", lat:47.64108, lon:-116.11296, dayUrl:"", seasonUrl:"", seasonPass:609, dayPass:68 }, 
+        { name:"Soldier Mountain", lat:43.483, lon:-114.833, dayUrl:"", seasonUrl:"", seasonPass:499, dayPass:59 }, 
+        { name:"Sun Valley", lat:43.6954, lon:-114.3539, dayUrl:"", seasonUrl:"", seasonPass:3599, dayPass:242 }, 
+        { name:"Tamarack", lat:44.7038104, lon:-116.1658189, dayUrl:"", seasonUrl:"", seasonPass:799, dayPass:88 }, 
+
+        // Alaska
+        { name:"Arctic Valley",           lat:61.246728,    lon:-149.534508,    dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null }, 
+        { name:"Alyeska Resort",          lat:60.9705,      lon:-149.0982,      dayUrl:"", seasonUrl:"", seasonPass:1549, dayPass:109 },
+        { name:"Eaglecrest Ski Area",     lat:58.2723,      lon:-134.5092,      dayUrl:"", seasonUrl:"", seasonPass:870, dayPass:75 }, 
+        { name:"Hilltop Ski Area",        lat:61.1410479,   lon:-149.738648143671, dayUrl:"", seasonUrl:"", seasonPass:610, dayPass:41 },
+        { name:"Mount Eyak",              lat:60.54278,     lon:-145.7575,      dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+        { name:"Ski Land",                lat:65.068521,    lon:-147.443936,    dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+        { name:"Moose Mountain",          lat:64.9406,    lon:-147.9906,    dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null } 
+ 
+
     ];
 
     // add markers
@@ -519,7 +544,7 @@
                       <div class="popup-text">Season Pass: ${r.seasonPass !== null ? '$' + r.seasonPass.toLocaleString() : 'NULL'}</div>
                       <div class="popup-text">Day Pass:   ${r.dayPass    !== null ? '$' + r.dayPass.toLocaleString()    : 'NULL'}</div>
                       <a class="popup-link" href="${r.dayUrl}"    target="_blank">Buy Tickets</a>
-                      <a class="popup-link" href="${r.seasonUrl}" target="_blank">Season Pass Info</a>
+                      
                     `)
                     .addTo(map);
       });

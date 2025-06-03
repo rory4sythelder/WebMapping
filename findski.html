@@ -15,51 +15,139 @@
       --font-base: 'Inter', sans-serif;
       --font-heading: 'Playfair Display', serif;
       --font-toggle: 'Montserrat', sans-serif;
+
+      /* Light-mode colors */
+      --bg-controls: rgba(255, 255, 255, 1);
+      --text-controls: #000;
+      --bg-panel: rgba(255, 255, 255, 0.9);
+      --text-panel: #000;
+      --bg-infobox: rgba(255, 255, 255, 0.8);
+      --text-infobox: #000;
+      --popup-bg: #fff;
+      --popup-text: #000;
     }
+
+    /* Dark-mode overrides */
+    .dark-mode {
+      --bg-controls: rgba(0, 0, 0, 1);
+      --text-controls: #fff;
+      --bg-panel: rgba(0, 0, 0, 0.9);
+      --text-panel: #fff;
+      --bg-infobox: rgba(0, 0, 0, 0.8);
+      --text-infobox: #fff;
+      --popup-bg: #000;
+      --popup-text: #fff;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
       font-family: var(--font-base);
+      background: #fff;
+      color: #000;
     }
+    .dark-mode html, .dark-mode body {
+      background: #000;
+      color: #fff;
+    }
+
     #map { width: 100%; height: 100%; }
 
-    /* Controls */
+    /* Theme Dark or light mode Toggle Container */
+    #theme-container {
+      position: absolute;
+      top: 10px;
+      left: 55px;
+      z-index: 1000;
+      background: var(--bg-controls);
+      padding: 4px 6px;
+      border-radius: 4px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      color: var(--text-controls);
+      font-family: var(--font-base);
+    }
+    .dark-mode #theme-container {
+      box-shadow: 0 0 5px rgba(255,255,255,0.3);
+    }
+    .theme-toggle {
+      font-size: 0.9em;
+      font-family: var(--font-toggle);
+      color: var(--text-controls);
+    }
+    .theme-toggle input {
+      margin-right: 4px;
+    }
+
+    /* Controls (other filters) */
     #controls {
       position: absolute;
-      top: 90%; left: 50%;
+      top: 90%;
+      left: 50%;
       transform: translateX(-50%);
       z-index: 1000;
-      background: black;
+      background: var(--bg-controls);
       padding: 6px 8px;
       border-radius: 4px;
       box-shadow: 0 0 5px rgba(0,0,0,0.3);
-      color: white;
+      color: var(--text-controls);
       font-family: var(--font-base);
     }
+    .dark-mode #controls {
+      box-shadow: 0 0 5px rgba(255,255,255,0.3);
+    }
+
     .pass-toggle, .price-toggle {
       margin-right: 8px;
       font-size: 0.9em;
       font-family: var(--font-toggle);
+      color: var(--text-controls);
     }
+
+    /* Accent colors for each pass checkbox */
+    #indy-toggle    { accent-color: red;    }
+    #epic-toggle    { accent-color: orange; }
+    #ikon-toggle    { accent-color: yellow; }
+    #freedom-toggle { accent-color: blue;   }
+
     #address-input {
       width: 180px;
       padding: 4px;
       font-family: var(--font-base);
+      background: #fff;
+      color: #000;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+    }
+    .dark-mode #address-input {
+      background: #222;
+      color: #fff;
+      border: 1px solid #555;
     }
     #address-submit {
       padding: 4px 8px;
       margin-right: 12px;
       font-family: var(--font-base);
+      background: #fff;
+      color: #000;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+    .dark-mode #address-submit {
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
     }
 
     /* Results panel */
     #results {
       position: absolute;
-      bottom: 2%; left: 1%;
+      bottom: 2%;
+      left: 1%;
       max-height: 300px;
       overflow-y: auto;
-      background: rgba(255,255,255,0.9);
+      background: var(--bg-panel);
       padding: 30px;
       border-radius: 4px;
       box-shadow: 0 0 5px rgba(0,0,0,0.3);
@@ -67,24 +155,41 @@
       font-size: 1.2em;
       display: none;
       z-index: 99999;
+      color: var(--text-panel);
+    }
+    .dark-mode #results {
+      box-shadow: 0 0 5px rgba(255,255,255,0.3);
     }
     #results h4 {
       margin: 0 0 6px;
       font-family: var(--font-heading);
     }
-    #results ol { margin: 0; padding-left: 20px; }
+    #results ol {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--text-panel);
+    }
 
     /* Popups */
     .popup-text, .popup-link {
       font-family: var(--font-base);
+      color: var(--popup-text);
     }
     .popup-link { 
       display: block;
       margin-top: 6px;
       font-size: 1.2em;
     }
-    .leaflet-popup-content { /* ensure map popups match */
-      font-family: var(--font-base);
+    .leaflet-popup-content-wrapper {
+      background: var(--popup-bg) !important;
+      color: var(--popup-text) !important;
+    }
+    .leaflet-popup-tip {
+      background: var(--popup-bg) !important;
+    }
+    .dark-mode .leaflet-popup-content-wrapper,
+    .dark-mode .leaflet-popup-tip {
+      background: var(--popup-bg) !important;
     }
 
     /* Pass info popup */
@@ -93,7 +198,7 @@
       bottom: 2%;
       right: 1%;
       width: 300px;
-      background: rgba(255,255,255,0.95);
+      background: var(--bg-panel);
       padding: 10px;
       border-radius: 4px;
       box-shadow: 0 0 5px rgba(0,0,0,0.3);
@@ -101,6 +206,10 @@
       font-size: 1em;
       display: none;
       z-index: 10000;
+      color: var(--text-panel);
+    }
+    .dark-mode #pass-info {
+      box-shadow: 0 0 5px rgba(255,255,255,0.3);
     }
     #pass-info h4 {
       margin: 0 0 6px;
@@ -109,6 +218,7 @@
     }
     #pass-info p {
       margin: 4px 0;
+      color: var(--text-panel);
     }
     #pass-info a {
       color: #0074D9;
@@ -119,10 +229,11 @@
     /* Header Text */
     #info-text {
       position: absolute;
-      top: 2%; left: 50%;
+      top: 2%;
+      left: 50%;
       transform: translateX(-50%);
       width: 1200px;
-      background: rgba(255,255,255,0.8);
+      background: var(--bg-infobox);
       padding: 8px;
       border-radius: 4px;
       font-family: var(--font-base);
@@ -130,17 +241,30 @@
       line-height: 1.2em;
       box-shadow: 0 0 5px rgba(0,0,0,0.3);
       z-index: 10000;
+      color: var(--text-infobox);
+    }
+    .dark-mode #info-text {
+      box-shadow: 0 0 5px rgba(255,255,255,0.3);
     }
     #info-text h4 {
       margin: 0 0 4px;
       font-size: 1.4em;
       font-weight: bold;
       font-family: var(--font-heading);
+      color: var(--text-infobox);
     }
   </style>
 </head>
 <body>
-  <!-- Controls -->
+  <!-- Theme Toggle (moved to top-left) -->
+  <div id="theme-container">
+    <label class="theme-toggle">
+      <input type="checkbox" id="theme-toggle" />
+      Dark Mode
+    </label>
+  </div>
+
+  <!-- Controls (other filters) -->
   <div id="controls">
     <!-- Price-Type Filter -->
     <label class="price-toggle">
@@ -185,17 +309,24 @@
   <!-- Bottom-left Info Text -->
   <div id="info-text">
     <h4 style="text-align: center;">Find Your West Coast Ski Area</h4>
-    Created by Rory Forsythe-Elder. Website last updated May 28, 2025. <br>
+    Created by Rory Forsythe-Elder. Website last updated June 3, 2025. Website optimized for laptop/desktop viewing.<br>
     Ski areas included on map if they have at least one conventional ski lift. Passes are based on pricing for a 30 year-old adult without special status (veteran, college student, etc). Day passes are based on a standard, non-holiday weekday and season passes are based on the cheapest available pass with no blackout dates.
   </div>
 
- 
   <script>
     const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoicm9yeTRzeXRoZWxkZXIiLCJhIjoiY205MXV2eXh1MDUxejJqb2VyOXlqcHduMSJ9.jayP103_JPGAKudstFC6Zw';
     const map = L.map('map').setView([46.5, -120.0], 6);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
+    // Define base layers
+    const lightLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+    });
+    const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap contributors & CartoDB'
+    });
+
+    // Add the light layer by default
+    lightLayer.addTo(map);
 
     // pass membership lists
     const ikonNames = [
@@ -215,57 +346,59 @@
       "Ski Bluewood","White Pass","Hurricane Ridge","49° North Mountain Resort",
       "Loup Loup Ski Bowl","Mission Ridge","Mount Shasta Ski Park",
       "China Peak Mountain Resort","Mountain High Resort",
-      "Dodge Ridge Mountain Resort","Bear Valley Mountain Resort"
+      "Dodge Ridge Mountain Resort","Bear Valley Mountain Resort", "Sunrise Park Resort"
     ];
 
     // build a DivIcon with snowflake + floating price label
-function getSnowIcon(borderColor = '', priceText = '') {
-  const innerBorder = borderColor ? 4 : 0;
-  const size = 20 + innerBorder * 2;
-  return L.divIcon({
-    html: `
-      <div style="
-        position: relative;
-        width: ${size}px;
-        height: ${size + 14}px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      ">
-        <!-- price label uses Montserrat now -->
-        <div style="
-          position: absolute;
-          top: 0;
-          left: 50%;
-          transform: translateX(-50%);
-          font-size: 10px;
-          font-family: var(--font-toggle);
-          background: white;
-          padding: 1px 3px;
-          border-radius: 2px;
-        ">${priceText}</div>
-        <div style="
-          margin-top: 14px;
-          width: ${size}px;
-          height: ${size}px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 20px;
-          color: red;
-          ${borderColor ? `border: ${innerBorder}px solid ${borderColor}; box-shadow: 0 0 0 2px black;` : ''}
-          border-radius: 50%;
-        ">
-          ❄️
-        </div>
-      </div>
-    `,
-    className: '',
-    iconSize: [size, size + 14],
-    iconAnchor: [size / 2, (size + 14) / 2]
-  });
-}
-
+    function getSnowIcon(borderColor = '', priceText = '') {
+      const innerBorder = borderColor ? 4 : 0;
+      const size = 20 + innerBorder * 2;
+      return L.divIcon({
+        html: `
+          <div style="
+            position: relative;
+            width: ${size}px;
+            height: ${size + 14}px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          ">
+            <!-- price label uses Montserrat now -->
+            <div style="
+              position: absolute;
+              top: 0;
+              left: 50%;
+              transform: translateX(-50%);
+              font-size: 10px;
+              font-family: var(--font-toggle);
+              background: var(--bg-panel);
+              color: var(--text-panel);
+              padding: 1px 3px;
+              border-radius: 2px;
+              box-shadow: 0 0 2px rgba(0,0,0,0.3);
+            ">${priceText}</div>
+            <div style="
+              margin-top: 14px;
+              width: ${size}px;
+              height: ${size}px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 20px;
+              color: red;
+              ${borderColor ? `border: ${innerBorder}px solid ${borderColor}; box-shadow: 0 0 0 2px black;` : ''}
+              border-radius: 50%;
+              background: var(--popup-bg);
+            ">
+              ❄️
+            </div>
+          </div>
+        `,
+        className: '',
+        iconSize: [size, size + 14],
+        iconAnchor: [size / 2, (size + 14) / 2]
+      });
+    }
 
     const skiResortsWithMarkers = [];
     let redRoutes = [];
@@ -338,12 +471,15 @@ function getSnowIcon(borderColor = '', priceText = '') {
       { name:"Sky Tavern", lat:39.3365761, lon:-119.8735225,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
       { name:"Elko Sno Bowl", lat:40.9091, lon:-115.8524,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
 
-      //Arizona
+      // Arizona
       { name:"Arizona Snowbowl", lat:35.330, lon:-111.705,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
       { name:"Mt. Lemmon Ski Valley", lat:32.452222, lon:-110.783889,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
       { name:"Sunrise Park Resort", lat:33.973333, lon:-109.564722,  dayUrl:"", seasonUrl:"", seasonPass:689, dayPass:79 }
-    
-      ]
+
+      //Idaho
+      
+    ];
+
     // add markers
     skiResorts.forEach(r => {
       const entry = { resort: r };
@@ -367,7 +503,7 @@ function getSnowIcon(borderColor = '', priceText = '') {
       skiResortsWithMarkers.forEach(e => {
         const r = e.resort;
         let border = '';
-        if (ikonOn    && ikonNames.includes(r.name))    border = 'yellow';
+        if (ikonOn    && ikonNames.includes(r.name))    border = 'yellow'; 
         if (epicOn    && epicNames.includes(r.name))    border = 'orange';
         if (freedomOn && freedomNames.includes(r.name)) border = 'blue';
         if (indyOn    && indyNames.includes(r.name))    border = 'red';
@@ -492,8 +628,8 @@ function getSnowIcon(borderColor = '', priceText = '') {
           `?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`
         ).then(res => res.json());
         if (routeResp.routes && routeResp.routes.length) {
-          const coords = routeResp.routes[0].geometry.coordinates.map(([lon,lat]) => [lat,lon]);
-          const line = L.polyline(coords, { color: 'red', weight: 3 }).addTo(map);
+          const coordsArr = routeResp.routes[0].geometry.coordinates.map(([lon,lat]) => [lat,lon]);
+          const line = L.polyline(coordsArr, { color: 'red', weight: 3 }).addTo(map);
           redRoutes.push(line);
         }
       }
@@ -501,6 +637,20 @@ function getSnowIcon(borderColor = '', priceText = '') {
 
     document.getElementById('address-input')
       .addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('address-submit').click(); });
+
+    // Theme toggle handler
+    document.getElementById('theme-toggle').addEventListener('change', function() {
+      const isDark = this.checked;
+      if (isDark) {
+        document.body.classList.add('dark-mode');
+        map.removeLayer(lightLayer);
+        darkLayer.addTo(map);
+      } else {
+        document.body.classList.remove('dark-mode');
+        map.removeLayer(darkLayer);
+        lightLayer.addTo(map);
+      }
+    });
   </script>
 </body>
 </html>

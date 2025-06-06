@@ -373,7 +373,7 @@
 
     // Initialize map with minZoom and maxBounds
     const map = L.map('map', {
-      center: [46.5, -120.0],
+      center: [48.5, -120.0],
       zoom: 4,
       minZoom: 4,
       maxBounds: usaBounds,
@@ -473,7 +473,7 @@
 
     // full list with dayPass & seasonPass
     const skiResorts = [
-      // — Oregon —
+      // — Oregon 10 —
       { name:"Mt. Hood Skibowl", lat:45.30189, lon:-121.773212, dayUrl:"https://skibowl.com/tickets-passes/daily-lift-tickets/", seasonUrl:"https://skibowl.com/tickets-passes/season-passes/", seasonPass:689,  dayPass:149 },
       { name:"Mt. Hood Meadows", lat:45.32889, lon:-121.66250,  dayUrl:"https://www.skihood.com/store/tickets-and-passes",              seasonUrl:"https://www.skihood.com/store/tickets-and-passes",      seasonPass:479,  dayPass:59  },
       { name:"Timberline Lodge", lat:45.33111, lon:-121.71000,  dayUrl:"https://tickets.timberlinelodge.com/", seasonUrl:"https://www.timberlinelodge.com/mountain/season-passes?",                seasonPass:1149, dayPass:114 },
@@ -485,7 +485,7 @@
       { name:"Anthony Lakes Ski Area", lat:44.96409, lon:-118.234482, dayUrl:"https://anthonylakes.com/winter/day-tickets/",          seasonUrl:"https://anthonylakes.com/season-passes/",             seasonPass:525,  dayPass:50  },
       { name:"Warner Canyon Ski Area", lat:42.23749, lon:-120.29583,  dayUrl:"https://warnercanyonski.com/buy",                     seasonUrl:"https://warnercanyonski.com/buy",         seasonPass:350, dayPass:35 },
 
-      // — Washington —
+      // — Washington 12 —
       { name:"49° North Mountain Resort", lat:48.30100, lon:-117.56300, dayUrl:"https://www.ski49n.com/tickets/day-tickets", seasonUrl:"https://www.ski49n.com/tickets/season-passes", seasonPass:549,  dayPass:47  },
       { name:"Ski Bluewood", lat:46.08200, lon:-117.85100, dayUrl:"https://bluewood.com/tickets",                    seasonUrl:"https://www.bluewood.com/25-26-season-pass",           seasonPass:699,  dayPass:59  },
       { name:"Crystal Mountain", lat:46.9282, lon:-121.5045, dayUrl:"https://www.crystalmountainresort.com/plan-your-trip/tickets-and-passes/day-tickets/", seasonUrl:"https://www.crystalmountainresort.com/plan-your-trip/tickets-and-passes/season-passes/", seasonPass:849, dayPass:149 },
@@ -499,7 +499,7 @@
       { name:"The Summit at Snoqualmie", lat:47.42400, lon:-121.41600, dayUrl:"https://www.summitatsnoqualmie.com/lift-tickets",          seasonUrl:"https://www.summitatsnoqualmie.com/season-passes", seasonPass:699,  dayPass:83  },
       { name:"White Pass", lat:46.6387,   lon:-121.3895, dayUrl:"https://skiwhitepass.com/the-mountain/lift-tickets", seasonUrl:"https://skiwhitepass.com/the-mountain/season-passes", seasonPass:799,  dayPass:85  },
 
-      // — California —
+      // — California 25 —
       { name:"Palisades Tahoe", lat:39.19720, lon:-120.23810,  dayUrl:"https://www.palisadestahoe.com/plan-your-visit/lift-tickets-season-pass", seasonUrl:"https://www.palisadestahoe.com/plan-your-visit/lift-tickets-season-pass", seasonPass:1449, dayPass:289 },
       { name:"Mammoth Mountain", lat:37.64858, lon:-118.97210,  dayUrl:"https://www.mammothmountain.com/plan-your-trip/tickets/winter-lift-tickets", seasonUrl:"https://www.mammothmountain.com/plan-your-trip/season-passes", seasonPass:1329, dayPass:219 },
       { name:"Heavenly Mountain Resort", lat:38.93506, lon:-119.93974,  dayUrl:"https://www.skiheavenly.com/plan-your-trip/lift-access/tickets.aspx", seasonUrl:"https://www.skiheavenly.com/plan-your-trip/lift-access/passes.aspx", seasonPass:707,  dayPass:232 },
@@ -518,29 +518,26 @@
       { name:"Boreal Mountain Resort", lat:39.33130, lon:-120.27760,  dayUrl:"https://www.rideboreal.com/day-access/tickets/go-time-lift-tickets/", seasonUrl:"https://www.rideboreal.com/passes-memberships/passes-memberships-overview/comparison/", seasonPass:609,  dayPass:139 },
       { name:"Soda Springs Mountain Resort", lat:39.30340, lon:-120.30390,  dayUrl:"https://www.skisodasprings.com/plan-your-trip/tickets-passes/tickets-passes-soda-springs/", seasonUrl:"https://www.skisodasprings.com/plan-your-trip/tickets-passes/unlimited-pass/", seasonPass:259,  dayPass:119 },
       { name:"Tahoe Donner Downhill Ski Area", lat:39.32480, lon:-120.22090, dayUrl:"https://www.tahoedonner.com/amenities/amenities/downhill-ski/tickets-passes-rental/day-tickets/", seasonUrl:"https://www.tahoedonner.com/amenities/amenities/downhill-ski/tickets-passes-rental/season-passes/", seasonPass:773,  dayPass:54  },
-      { name:"Big Bear Mountain Resort", lat:34.23630, lon:-116.85620,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
-      { name:"Snow Summit", lat:34.25600, lon:-117.03020,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
-      { name:"Snow Valley Mountain Resort", lat:34.28240, lon:-117.17740,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
-      { name:"Mountain High Resort", lat:34.30940, lon:-117.69010,  dayUrl:"", seasonUrl:"", seasonPass:849,  dayPass:119 },
-      { name:"Mt. Baldy Resort", lat:34.23620, lon:-117.65620,  dayUrl:"", seasonUrl:"", seasonPass:599,  dayPass:69 },
-      { name:"Mount Waterman", lat:34.27640, lon:-118.17690,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
-      { name:"Buckhorn Ski and Snowboard Club", lat:37.79850, lon:-120.06840, dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
-      { name:"Alta Sierra at Shirley Meadows", lat:36.09560, lon:-118.40620, dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
-      { name:"Coppervale Ski Area", lat:39.77620, lon:-120.47220,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Bear Mountain", lat:34.23630, lon:-116.85620,  dayUrl:"https://www.bigbearmountainresort.com/ski-and-snowboard/lift-tickets?utm_source=snow-stash-web&utm_medium=referral&utm_campaign=snow-stash-web-button", seasonUrl:"https://www.bigbearmountainresort.com/ski-and-snowboard/season-passes/anytime?utm_source=chatgpt.com", seasonPass:719, dayPass:160 },
+      { name:"Snow Summit", lat:34.25600, lon:-117.03020,  dayUrl:"https://www.bigbearmountainresort.com/ski-and-snowboard/lift-tickets?utm_source=snow-stash-web&utm_medium=referral&utm_campaign=snow-stash-web-button", seasonUrl:"https://www.bigbearmountainresort.com/ski-and-snowboard/season-passes/anytime?utm_source=chatgpt.com", seasonPass:719, dayPass:160 },
+      { name:"Snow Valley", lat:34.28240, lon:-117.17740,  dayUrl:"https://www.bigbearmountainresort.com/ski-and-snowboard/lift-tickets?utm_source=snow-stash-web&utm_medium=referral&utm_campaign=snow-stash-web-button", seasonUrl:"https://www.bigbearmountainresort.com/ski-and-snowboard/season-passes/snow-valley-anytime", seasonPass:479, dayPass:125 },
+      { name:"Mountain High Resort", lat:34.30940, lon:-117.69010,  dayUrl:"https://www.mthigh.com/site/tickets-and-groups/ticket-pricing/lift-tickets.html", seasonUrl:"https://www.mthigh.com/site/tickets-and-groups/season-passes/season-passes.html", seasonPass:889,  dayPass:119 },
+      { name:"Mt. Baldy Resort", lat:34.23620, lon:-117.65620,  dayUrl:"https://www.mtbaldyresort.com/tickets", seasonUrl:"https://www.mtbaldyresort.com/season-passes", seasonPass:704,  dayPass:69 },
+      { name:"Mount Waterman", lat:34.27640, lon:-118.17690,  dayUrl:"http://www.mtwaterman.org/Tickets.html", seasonUrl:"http://www.mtwaterman.org/Tickets.html", seasonPass:300, dayPass:80 },
+      { name:"Alta Sierra at Shirley Meadows", lat:36.09560, lon:-118.40620, dayUrl:"https://altasierra.com/v2/tickets.aspx", seasonUrl:"", seasonPass:null, dayPass:70 },
 
-      // Nevada
+      // Nevada 4
       { name:"Lee Canyon", lat:36.301638, lon:-115.680759,  dayUrl:"https://www.leecanyonlv.com/winter-lift-ticket/", seasonUrl:"https://www.leecanyonlv.com/season-pass/", seasonPass:749, dayPass:59 },
       { name:"Mount Rose", lat:39.329167, lon:-119.885833,  dayUrl:"https://skirose.com/lift-tickets/", seasonUrl:"https://skirose.com/season-passes/", seasonPass:975, dayPass:165 },
       { name:"Diamond Peak", lat:39.254, lon:-119.924,  dayUrl:"https://www.diamondpeak.com/tickets-passes-rentals/lift-tickets/", seasonUrl:"https://www.diamondpeak.com/tickets-passes-rentals/season-passes/", seasonPass:588, dayPass:130 },
-      { name:"Sky Tavern", lat:39.3365761, lon:-119.8735225,  dayUrl:"https://www.shopskytavern.org/index.php", seasonUrl:"https://www.shopskytavern.org/index.php", seasonPass:null, dayPass:null },
       { name:"Elko Sno Bowl", lat:40.9091, lon:-115.8524,  dayUrl:"https://google.com", seasonUrl:"https://google.com", seasonPass:null, dayPass:50 },
 
-      // Arizona
+      // Arizona 3
       { name:"Arizona Snowbowl", lat:35.330, lon:-111.705,  dayUrl:"https://www.snowbowl.ski/lift-tickets/", seasonUrl:"https://www.snowbowl.ski/plan-your-trip/season-passes/", seasonPass:749, dayPass:19 },
       { name:"Mt. Lemmon Ski Valley", lat:32.452222, lon:-110.783889,  dayUrl:"https://www.skithelemmon.com/new-page-1", seasonUrl:"https://google.com", seasonPass:null, dayPass:73 },
       { name:"Sunrise Park Resort", lat:33.973333, lon:-109.564722,  dayUrl:"https://www.sunrise.ski/winter/day-passes/", seasonUrl:"https://www.sunrise.ski/winter/tickets/", seasonPass:729, dayPass:77 },
 
-      // Idaho
+      // Idaho 12
       { name:"Bald Mountain", lat:43.654847, lon:-114.409368, dayUrl:"https://skibaldmountain.com/tickets/", seasonUrl:"https://skibaldmountain.com/tickets/", seasonPass:null, dayPass:25 }, 
       { name:"Bogus Basin", lat:43.76468, lon:-116.10329, dayUrl:"https://bogusbasin.org/tickets-passes/winter-tickets/#accordion-snowboarding-alpine-skiing", seasonUrl:"https://bogusbasin.org/tickets-passes/season-passes/", seasonPass:649, dayPass:84 }, 
       { name:"Brundage Mountain", lat:45.0036, lon:-116.1597, dayUrl:"https://brundage.com/daily-lift-tickets", seasonUrl:"https://brundage.com/season-passes", seasonPass:899, dayPass:95 }, 
@@ -554,14 +551,14 @@
       { name:"Sun Valley", lat:43.6954, lon:-114.3539, dayUrl:"https://www.sunvalley.com/tickets-passes/lift-tickets/", seasonUrl:"https://www.sunvalley.com/tickets-passes/season-passes/", seasonPass:2979, dayPass:242 }, 
       { name:"Tamarack", lat:44.7038104, lon:-116.1658189, dayUrl:"https://tamarackidaho.com/activities/lift-tickets", seasonUrl:"https://tamarackidaho.com/activities/boundless-pass", seasonPass:599, dayPass:88 }, 
 
-      // Alaska
+      // Alaska 7
       { name:"Arctic Valley",           lat:61.246728,    lon:-149.534508,    dayUrl:"https://arcticvalley.org/product-category/lift-tickets/", seasonUrl:"https://arcticvalley.org/product-category/membership/season-passes/", seasonPass:475, dayPass:49 }, 
       { name:"Alyeska Resort",          lat:60.9705,      lon:-149.0982,      dayUrl:"https://www.alyeskaresort.com/product/lift-tickets/", seasonUrl:"https://www.alyeskaresort.com/season-passes/", seasonPass:1549, dayPass:109 },
       { name:"Eaglecrest Ski Area",     lat:58.2723,      lon:-134.5092,      dayUrl:"https://skieaglecrest.com/lift-tickets/", seasonUrl:"https://skieaglecrest.com/season-passes/", seasonPass:870, dayPass:75 }, 
       { name:"Hilltop Ski Area",        lat:61.1410479,   lon:-149.738648143671, dayUrl:"https://www.hilltopskiarea.org/plan-your-visit/ticket-info/", seasonUrl:"https://www.hilltopskiarea.org/plan-your-visit/ticket-info/", seasonPass:610, dayPass:41 },
-      { name:"Mount Eyak",              lat:60.54278,     lon:-145.7575,      dayUrl:"https://google.com", seasonUrl:"https://google.com", seasonPass:null, dayPass:null },
+      { name:"Mount Eyak",              lat:60.54278,     lon:-145.7575,      dayUrl:"https://www.mteyak.org/", seasonUrl: "https://www.mteyak.org/", seasonPass:null, dayPass:null },
       { name:"Ski Land",                lat:65.068521,    lon:-147.443936,    dayUrl:"https://skilandfairbanks.com/rates/", seasonUrl:"https://skilandfairbanks.com/passes/", seasonPass:625, dayPass:55 },
-      { name:"Moose Mountain",          lat:64.9406,      lon:-147.9906,      dayUrl:"https://shredthemoose.com/passes-tickets-2/", seasonUrl:"https://shredthemoose.com/passes-tickets-2/", seasonPass:null, dayPass:55 } 
+      { name:"Moose Mountain",          lat:64.9406,      lon:-147.9906,      dayUrl:"https://shredthemoose.com/passes-tickets-2/", seasonUrl:"https://shredthemoose.com/passes-tickets-2/", seasonPass:600, dayPass:55 } 
     ];
 
     // add markers

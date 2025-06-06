@@ -315,6 +315,10 @@
         <input type="radio" name="price-type" value="season" id="price-season">
         Season Pass
       </label>
+      <label class="price-toggle">
+        <input type="radio" name="price-type" value="multiplier" id="price-multiplier">
+        Ratio
+      </label>
 
       <input id="address-input" type="text" placeholder="Enter your address here" />
       <button id="address-submit">Go</button>
@@ -357,12 +361,24 @@
   <div id="info-text">
     <h4 style="text-align: center;">Find The Ski Area For You (Western United States)</h4>
     <h4 style="text-align: center;"> </h4>Created by Rory Forsythe-Elder. This website is optimized for laptop/desktop viewing. Last updated June 3, 2025. <br>
-  
   </div>
 
   <script>
     const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoicm9yeTRzeXRoZWxkZXIiLCJhIjoiY205MXV2eXh1MDUxejJqb2VyOXlqcHduMSJ9.jayP103_JPGAKudstFC6Zw';
-    const map = L.map('map').setView([46.5, -120.0], 6);
+
+    // Define the approximate bounding box for all USA (west = Aleutians, east = East Coast)
+    const southWest = [0, -170];
+    const northEast = [72, -66];
+    const usaBounds = L.latLngBounds(southWest, northEast);
+
+    // Initialize map with minZoom and maxBounds
+    const map = L.map('map', {
+      center: [46.5, -120.0],
+      zoom: 4,
+      minZoom: 4,
+      maxBounds: usaBounds,
+      maxBoundsViscosity: 1.0
+    });
 
     // Define base layers
     const lightLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -401,8 +417,8 @@
       "Willamette Pass Resort", "Lee Canyon", "Arizona Snowbowl"
     ];
 
-    // build a DivIcon with snowflake + floating price label
-    function getSnowIcon(borderColor = '', priceText = '') {
+    // build a DivIcon with snowflake + floating price/ratio label
+    function getSnowIcon(borderColor = '', labelText = '') {
       const innerBorder = borderColor ? 4 : 0;
       const size = 20 + innerBorder * 2;
       return L.divIcon({
@@ -415,7 +431,7 @@
             flex-direction: column;
             align-items: center;
           ">
-            <!-- price label uses Montserrat now -->
+            <!-- label uses Montserrat now -->
             <div style="
               position: absolute;
               top: 0;
@@ -428,7 +444,7 @@
               padding: 1px 3px;
               border-radius: 2px;
               box-shadow: 0 0 2px rgba(0,0,0,0.3);
-            ">${priceText}</div>
+            ">${labelText}</div>
             <div style="
               margin-top: 14px;
               width: ${size}px;
@@ -495,14 +511,13 @@
       { name:"Bear Valley Mountain Resort", lat:38.13580, lon:-119.62500,  dayUrl:"https://www.bearvalley.com/tickets", seasonUrl:"https://www.bearvalley.com/season-passes", seasonPass:629,  dayPass:89 },
       { name:"Dodge Ridge Mountain Resort", lat:37.84550, lon:-119.80880,  dayUrl:"https://dodgeridge.com/lift-tickets/", seasonUrl:"https://dodgeridge.com/winter-tickets-passes/", seasonPass:629,  dayPass:129 },
       { name:"China Peak Mountain Resort", lat:37.38440, lon:-119.38900,  dayUrl:"https://www.skichinapeak.com/lift-tickets", seasonUrl:"https://skichinapeak.com/season-passes", seasonPass:629,  dayPass:111 },
-      { name:"Homewood Mountain Resort", lat:38.96490, lon:-120.10660,  dayUrl:"", seasonUrl:"", seasonPass:949,  dayPass:104 },
-      { name:"Mount Shasta Ski Park", lat:41.31020, lon:-122.32780,  dayUrl:"", seasonUrl:"", seasonPass:699,  dayPass:99  },
-      { name:"Badger Pass Ski Area", lat:37.73310, lon:-119.63700,  dayUrl:"", seasonUrl:"", seasonPass:150,  dayPass:47  },
-      { name:"Donner Ski Ranch", lat:39.30340, lon:-120.30350,  dayUrl:"", seasonUrl:"", seasonPass:549,  dayPass:109 },
-      { name:"Boreal Mountain Resort", lat:39.33130, lon:-120.27760,  dayUrl:"", seasonUrl:"", seasonPass:659,  dayPass:139 },
-      { name:"Soda Springs Mountain Resort", lat:39.30340, lon:-120.30390,  dayUrl:"", seasonUrl:"", seasonPass:279,  dayPass:119 },
-      { name:"Tahoe Donner Downhill Ski Area", lat:39.32480, lon:-120.22090, dayUrl:"", seasonUrl:"", seasonPass:773,  dayPass:54  },
-      { name:"Granlibakken Tahoe", lat:39.33470, lon:-120.18520,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
+      { name:"Homewood Mountain Resort", lat:38.96490, lon:-120.10660,  dayUrl:"https://skihomewood.com/tickets/", seasonUrl:"https://shop.skihomewood.com/s/season-passes/", seasonPass:999,  dayPass:104 },
+      { name:"Mount Shasta Ski Park", lat:41.31020, lon:-122.32780,  dayUrl:"https://www.skipark.com/winter/lift-tickets-1", seasonUrl:"https://www.skipark.com/winter/season-passes", seasonPass:499,  dayPass:99  },
+      { name:"Badger Pass Ski Area", lat:37.73310, lon:-119.63700,  dayUrl:"https://www.travelyosemite.com/winter/badger-pass-ski-area/downhill-skiing-snowboarding", seasonUrl:"https://www.travelyosemite.com/winter/badger-pass-ski-area/season-passes-discounts", seasonPass:500,  dayPass:64  },
+      { name:"Donner Ski Ranch", lat:39.30340, lon:-120.30350,  dayUrl:"https://www.donnerskiranch.com/pricing", seasonUrl:"https://www.donnerskiranch.com/season-passes", seasonPass:549,  dayPass:109 },
+      { name:"Boreal Mountain Resort", lat:39.33130, lon:-120.27760,  dayUrl:"https://www.rideboreal.com/day-access/tickets/go-time-lift-tickets/", seasonUrl:"https://www.rideboreal.com/passes-memberships/passes-memberships-overview/comparison/", seasonPass:609,  dayPass:139 },
+      { name:"Soda Springs Mountain Resort", lat:39.30340, lon:-120.30390,  dayUrl:"https://www.skisodasprings.com/plan-your-trip/tickets-passes/tickets-passes-soda-springs/", seasonUrl:"https://www.skisodasprings.com/plan-your-trip/tickets-passes/unlimited-pass/", seasonPass:259,  dayPass:119 },
+      { name:"Tahoe Donner Downhill Ski Area", lat:39.32480, lon:-120.22090, dayUrl:"https://www.tahoedonner.com/amenities/amenities/downhill-ski/tickets-passes-rental/day-tickets/", seasonUrl:"https://www.tahoedonner.com/amenities/amenities/downhill-ski/tickets-passes-rental/season-passes/", seasonPass:773,  dayPass:54  },
       { name:"Big Bear Mountain Resort", lat:34.23630, lon:-116.85620,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
       { name:"Snow Summit", lat:34.25600, lon:-117.03020,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
       { name:"Snow Valley Mountain Resort", lat:34.28240, lon:-117.17740,  dayUrl:"", seasonUrl:"", seasonPass:null, dayPass:null },
@@ -526,27 +541,27 @@
       { name:"Sunrise Park Resort", lat:33.973333, lon:-109.564722,  dayUrl:"https://www.sunrise.ski/winter/day-passes/", seasonUrl:"https://www.sunrise.ski/winter/tickets/", seasonPass:729, dayPass:77 },
 
       // Idaho
-        { name:"Bald Mountain", lat:43.654847, lon:-114.409368, dayUrl:"https://skibaldmountain.com/tickets/", seasonUrl:"https://skibaldmountain.com/tickets/", seasonPass:null, dayPass:25 }, 
-        { name:"Bogus Basin", lat:43.76468, lon:-116.10329, dayUrl:"https://bogusbasin.org/tickets-passes/winter-tickets/#accordion-snowboarding-alpine-skiing", seasonUrl:"https://bogusbasin.org/tickets-passes/season-passes/", seasonPass:649, dayPass:84 }, 
-        { name:"Brundage Mountain", lat:45.0036, lon:-116.1597, dayUrl:"https://brundage.com/daily-lift-tickets", seasonUrl:"https://brundage.com/season-passes", seasonPass:899, dayPass:95 }, 
-        { name:"Kelly Canyon", lat:43.63932793, lon:-111.6166865, dayUrl:"https://www.kellycanyonresort.com/ski/", seasonUrl:"https://www.kellycanyonresort.com/ski/", seasonPass:1099, dayPass:45 },
-        { name:"Lookout Pass", lat:47.4549307, lon:-115.6968233, dayUrl:"https://skilookout.com/lift-tickets", seasonUrl:"https://skilookout.com/season-pass", seasonPass:549, dayPass:58 }, 
-        { name:"Pebble Creek", lat:42.7757493, lon:-112.1527444, dayUrl:"https://pebblecreekskiarea.com/tickets-passes/", seasonUrl:"https://pebblecreekskiarea.com/tickets-passes/", seasonPass:858, dayPass:83 }, 
-        { name:"Pomerelle", lat:42.31213, lon:-113.61195, dayUrl:"https://www.pomerelle.com/reload", seasonUrl:"https://www.pomerelle.com/season-passes", seasonPass:599, dayPass:53 }, 
-        { name:"Schweitzer Mountain", lat:48.380368, lon:-116.633828, dayUrl:"https://www.schweitzer.com/plan-your-trip/tickets-and-passes", seasonUrl:"https://www.schweitzer.com/plan-your-trip/tickets-and-passes", seasonPass:1139, dayPass:120 }, 
-        { name:"Silver Mountain", lat:47.64108, lon:-116.11296, dayUrl:"https://silvermt.com/tickets", seasonUrl:"https://silvermt.com/tickets", seasonPass:609, dayPass:68 }, 
-        { name:"Soldier Mountain", lat:43.483, lon:-114.833, dayUrl:"https://soldiermountain.com/tickets-passes/", seasonUrl:"https://soldiermountain.com/tickets-passes/", seasonPass:449, dayPass:59 }, 
-        { name:"Sun Valley", lat:43.6954, lon:-114.3539, dayUrl:"https://www.sunvalley.com/tickets-passes/lift-tickets/", seasonUrl:"https://www.sunvalley.com/tickets-passes/season-passes/", seasonPass:2979, dayPass:242 }, 
-        { name:"Tamarack", lat:44.7038104, lon:-116.1658189, dayUrl:"https://tamarackidaho.com/activities/lift-tickets", seasonUrl:"https://tamarackidaho.com/activities/boundless-pass", seasonPass:599, dayPass:88 }, 
+      { name:"Bald Mountain", lat:43.654847, lon:-114.409368, dayUrl:"https://skibaldmountain.com/tickets/", seasonUrl:"https://skibaldmountain.com/tickets/", seasonPass:null, dayPass:25 }, 
+      { name:"Bogus Basin", lat:43.76468, lon:-116.10329, dayUrl:"https://bogusbasin.org/tickets-passes/winter-tickets/#accordion-snowboarding-alpine-skiing", seasonUrl:"https://bogusbasin.org/tickets-passes/season-passes/", seasonPass:649, dayPass:84 }, 
+      { name:"Brundage Mountain", lat:45.0036, lon:-116.1597, dayUrl:"https://brundage.com/daily-lift-tickets", seasonUrl:"https://brundage.com/season-passes", seasonPass:899, dayPass:95 }, 
+      { name:"Kelly Canyon", lat:43.63932793, lon:-111.6166865, dayUrl:"https://www.kellycanyonresort.com/ski/", seasonUrl:"https://www.kellycanyonresort.com/ski/", seasonPass:1099, dayPass:45 },
+      { name:"Lookout Pass", lat:47.4549307, lon:-115.6968233, dayUrl:"https://skilookout.com/lift-tickets", seasonUrl:"https://skilookout.com/season-pass", seasonPass:549, dayPass:58 }, 
+      { name:"Pebble Creek", lat:42.7757493, lon:-112.1527444, dayUrl:"https://pebblecreekskiarea.com/tickets-passes/", seasonUrl:"https://pebblecreekskiarea.com/tickets-passes/", seasonPass:858, dayPass:83 }, 
+      { name:"Pomerelle", lat:42.31213, lon:-113.61195, dayUrl:"https://www.pomerelle.com/reload", seasonUrl:"https://www.pomerelle.com/season-passes", seasonPass:599, dayPass:53 }, 
+      { name:"Schweitzer Mountain", lat:48.380368, lon:-116.633828, dayUrl:"https://www.schweitzer.com/plan-your-trip/tickets-and-passes", seasonUrl:"https://www.schweitzer.com/plan-your-trip/tickets-and-passes", seasonPass:1139, dayPass:120 }, 
+      { name:"Silver Mountain", lat:47.64108, lon:-116.11296, dayUrl:"https://silvermt.com/tickets", seasonUrl:"https://silvermt.com/tickets", seasonPass:609, dayPass:68 }, 
+      { name:"Soldier Mountain", lat:43.483, lon:-114.833, dayUrl:"https://soldiermountain.com/tickets-passes/", seasonUrl:"https://soldiermountain.com/tickets-passes/", seasonPass:449, dayPass:59 }, 
+      { name:"Sun Valley", lat:43.6954, lon:-114.3539, dayUrl:"https://www.sunvalley.com/tickets-passes/lift-tickets/", seasonUrl:"https://www.sunvalley.com/tickets-passes/season-passes/", seasonPass:2979, dayPass:242 }, 
+      { name:"Tamarack", lat:44.7038104, lon:-116.1658189, dayUrl:"https://tamarackidaho.com/activities/lift-tickets", seasonUrl:"https://tamarackidaho.com/activities/boundless-pass", seasonPass:599, dayPass:88 }, 
 
-        // Alaska
-        { name:"Arctic Valley",           lat:61.246728,    lon:-149.534508,    dayUrl:"https://arcticvalley.org/product-category/lift-tickets/", seasonUrl:"https://arcticvalley.org/product-category/membership/season-passes/", seasonPass:475, dayPass:49 }, 
-        { name:"Alyeska Resort",          lat:60.9705,      lon:-149.0982,      dayUrl:"https://www.alyeskaresort.com/product/lift-tickets/", seasonUrl:"https://www.alyeskaresort.com/season-passes/", seasonPass:1549, dayPass:109 },
-        { name:"Eaglecrest Ski Area",     lat:58.2723,      lon:-134.5092,      dayUrl:"https://skieaglecrest.com/lift-tickets/", seasonUrl:"https://skieaglecrest.com/season-passes/", seasonPass:870, dayPass:75 }, 
-        { name:"Hilltop Ski Area",        lat:61.1410479,   lon:-149.738648143671, dayUrl:"https://www.hilltopskiarea.org/plan-your-visit/ticket-info/", seasonUrl:"https://www.hilltopskiarea.org/plan-your-visit/ticket-info/", seasonPass:610, dayPass:41 },
-        { name:"Mount Eyak",              lat:60.54278,     lon:-145.7575,      dayUrl:"https://google.com", seasonUrl:"https://google.com", seasonPass:null, dayPass:null },
-        { name:"Ski Land",                lat:65.068521,    lon:-147.443936,    dayUrl:"https://skilandfairbanks.com/rates/", seasonUrl:"https://skilandfairbanks.com/passes/", seasonPass:625, dayPass:55 },
-        { name:"Moose Mountain",          lat:64.9406,    lon:-147.9906,    dayUrl:"https://shredthemoose.com/passes-tickets-2/", seasonUrl:"https://shredthemoose.com/passes-tickets-2/", seasonPass:null, dayPass:55 } 
+      // Alaska
+      { name:"Arctic Valley",           lat:61.246728,    lon:-149.534508,    dayUrl:"https://arcticvalley.org/product-category/lift-tickets/", seasonUrl:"https://arcticvalley.org/product-category/membership/season-passes/", seasonPass:475, dayPass:49 }, 
+      { name:"Alyeska Resort",          lat:60.9705,      lon:-149.0982,      dayUrl:"https://www.alyeskaresort.com/product/lift-tickets/", seasonUrl:"https://www.alyeskaresort.com/season-passes/", seasonPass:1549, dayPass:109 },
+      { name:"Eaglecrest Ski Area",     lat:58.2723,      lon:-134.5092,      dayUrl:"https://skieaglecrest.com/lift-tickets/", seasonUrl:"https://skieaglecrest.com/season-passes/", seasonPass:870, dayPass:75 }, 
+      { name:"Hilltop Ski Area",        lat:61.1410479,   lon:-149.738648143671, dayUrl:"https://www.hilltopskiarea.org/plan-your-visit/ticket-info/", seasonUrl:"https://www.hilltopskiarea.org/plan-your-visit/ticket-info/", seasonPass:610, dayPass:41 },
+      { name:"Mount Eyak",              lat:60.54278,     lon:-145.7575,      dayUrl:"https://google.com", seasonUrl:"https://google.com", seasonPass:null, dayPass:null },
+      { name:"Ski Land",                lat:65.068521,    lon:-147.443936,    dayUrl:"https://skilandfairbanks.com/rates/", seasonUrl:"https://skilandfairbanks.com/passes/", seasonPass:625, dayPass:55 },
+      { name:"Moose Mountain",          lat:64.9406,      lon:-147.9906,      dayUrl:"https://shredthemoose.com/passes-tickets-2/", seasonUrl:"https://shredthemoose.com/passes-tickets-2/", seasonPass:null, dayPass:55 } 
     ];
 
     // add markers
@@ -579,17 +594,32 @@
         if (indyOn    && indyNames.includes(r.name))    border = 'red';
         if (powerOn   && powerNames.includes(r.name))   border = 'gray';
 
-        const raw = priceType === 'day' ? r.dayPass : r.seasonPass;
-        const priceText = raw !== null ? '$' + raw.toLocaleString() : 'NULL';
+        let raw;
+        if (priceType === 'day') {
+          raw = r.dayPass;
+        } else if (priceType === 'season') {
+          raw = r.seasonPass;
+        } else {
+          raw = (r.seasonPass !== null && r.dayPass !== null && r.dayPass > 0)
+                ? (r.seasonPass / r.dayPass).toFixed(2)
+                : null;
+        }
 
-        const icon = getSnowIcon(border, priceText);
+        let labelText;
+        if (priceType === 'multiplier') {
+          labelText = raw !== null ? raw : 'NULL';
+        } else {
+          labelText = raw !== null ? '$' + raw.toLocaleString() : 'NULL';
+        }
+
+        const icon = getSnowIcon(border, labelText);
 
         e.marker = L.marker([r.lat, r.lon], { icon })
                     .bindPopup(`
                       <strong>${r.name}</strong>
                       <div class="popup-text">Season Pass: ${r.seasonPass !== null ? '$' + r.seasonPass.toLocaleString() : 'NULL'}</div>
                       <div class="popup-text">Day Pass:   ${r.dayPass    !== null ? '$' + r.dayPass.toLocaleString()    : 'NULL'}</div>
-                      <div class="popup-text">Day to Season Multiplier: ${r.seasonPass !== null && r.dayPass !== null && r.dayPass > 0 ? (r.seasonPass / r.dayPass).toFixed(2) : 'NULL'}</div>
+                      <div class="popup-text">Day to Season Ratio: ${r.seasonPass !== null && r.dayPass !== null && r.dayPass > 0 ? (r.seasonPass / r.dayPass).toFixed(2) : 'NULL'}</div>
                       <a class="popup-link" href="${r.dayUrl}"    target="_blank">Buy Day Pass</a>
                       <a class="popup-link" href="${r.seasonUrl}" target="_blank">Buy Season Pass</a>
                     `)

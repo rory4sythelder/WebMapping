@@ -54,7 +54,7 @@
 
     #map { width: 100%; height: 100%; }
 
-    /* Theme Dark or light mode Toggle Container */
+    /* Theme Dark or light mode Toggle */
     #theme-container {
       position: absolute;
       top: 10px;
@@ -91,7 +91,7 @@
       background-color: white;
     }
 
-    /* Wrapper for Controls and Text Box */
+    /* Wrapper for Pass/Price Controls and Text Box */
     #controls-wrapper {
       position: absolute;
       top: 79%;
@@ -115,7 +115,7 @@
       box-shadow: 0 0 5px rgba(255,255,255,0.3);
     }
 
-    /* New Text Box Below Controls */
+    /* Bottome text box under pass controls */
     #text-box {
       margin-top: 8px;
       background: var(--bg-controls);
@@ -139,7 +139,7 @@
       color: var(--text-controls);
     }
 
-    /* Accent colors for each pass checkbox */
+    /*  colors for each pass checkbox */
     #indy-toggle    { accent-color: red;    }
     #epic-toggle    { accent-color: orange; }
     #ikon-toggle    { accent-color: yellow; }
@@ -176,7 +176,7 @@
       border: 1px solid #555;
     }
 
-    /* Results panel */
+    /* Closest 10 resort sResults panel */
     #results {
       position: absolute;
       bottom: 2%;
@@ -294,7 +294,7 @@
   </style>
 </head>
 <body>
-  <!-- Theme Toggle (moved to top-left) -->
+  <!-- Theme Toggle -->
   <div id="theme-container">
     <label class="theme-toggle">
       <input type="checkbox" id="theme-toggle" />
@@ -341,7 +341,7 @@
       </label>
     </div>
 
-    <!-- New Text Box Below Controls -->
+    <!-- Text box under pass control -->
     <div id="text-box">States currently included: California, Nevada, Arizona, Oregon, Idaho, Washington, and Alaska. Ski areas are included on the map if they have at least one conventional ski lift (exception for Moose Mountain in Alaska which has buses). Passes are based on pricing for a 30 year-old adult without special status (veteran, college student, etc). Day passes are based on a standard, entire non-holiday weekday purchased one week in advance and season passes are based on the cheapest available pass with no blackout dates. Note: Some ski resorts do not offer their own season passes but rather only are available with unlimited access as part of a multi-resort pass like Northstar California Resort on the Ikon Pass. In such cases, the price of the multi-resort pass is used. "Ratio" is determined by dividing the season pass cost by the day pass cost, which each may not be wholly accurate. <br> Sources: Leaflet, Mapbox, Google, onthesnow.com, multi-resort passes (linked in sidebar pop-ups), and individual resorts (linked in snowflake pop-ups).</div>
   </div>
 
@@ -360,7 +360,7 @@
   <!-- Bottom-left Info Text -->
   <div id="info-text">
     <h4 style="text-align: center;">Find The Ski Area For You (Western United States)</h4>
-    <h4 style="text-align: center;"> </h4>Created by Rory Forsythe-Elder. This website is optimized for laptop/desktop viewing. Last updated June 3, 2025. <br>
+    <h4 style="text-align: center;"> </h4>Created by Rory Forsythe-Elder. This website is optimized for laptop/desktop viewing. Last updated June 6, 2025. <br>
   </div>
 
   <script>
@@ -388,7 +388,7 @@
       attribution: '&copy; OpenStreetMap contributors & CartoDB'
     });
 
-    // Add the light layer by default
+    // Light mode is default
     lightLayer.addTo(map);
 
     // pass membership lists
@@ -624,7 +624,7 @@
       });
     }
 
-    // initial render
+    // icon render
     refreshIcons();
 
     // bind toggles
@@ -668,7 +668,7 @@
       }
     }
 
-    // haversine & routing
+    // mapbox api closest 10 resort haversine & routing
     function haversine(lat1, lon1, lat2, lon2) {
       const R = 6371, toRad = d => d * Math.PI / 180;
       const dLat = toRad(lat2 - lat1), dLon = toRad(lon2 - lon1);
@@ -742,7 +742,7 @@
     document.getElementById('address-input')
       .addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('address-submit').click(); });
 
-    // Theme toggle handler
+    // dark mode light mode switch text top left
     document.getElementById('theme-toggle').addEventListener('change', function() {
       const isDark = this.checked;
       const label = document.getElementById('theme-label');
